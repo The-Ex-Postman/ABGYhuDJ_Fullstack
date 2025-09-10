@@ -1,0 +1,214 @@
+{
+  "info": {
+    "name": "ABGYhuDJ - Admin Concerts v2",
+    "_postman_id": "7a4a8c2c-0b62-4c5e-b96e-af-admin-tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Tests Newman pour l'administration des concerts (login session, CRUD concert, stock, doublon)."
+  },
+  "item": [
+    {
+      "name": "Auth - Login (admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\": \"{{adminEmail}}\", \"password\": \"{{adminPassword}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+            "pm.test('200 OK', () => pm.response.to.have.status(200));",
+            "",
+            "// Vérifie le rôle ADMIN dans la réponse",
+            "const json = pm.response.json();",
+            "pm.test('Role ADMIN', () => pm.expect(json.user?.role || json.role).to.eql('ADMIN'));",
+            "",
+            "// Cookie de session (si tu utilises express-session)",
+            "const sid = postman.getResponseCookie('connect.sid');",
+            "pm.test('Cookie de session présent', () => pm.expect(!!sid).to.be.true);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET - Liste des concerts",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admin/api/concerts"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('200 OK + ok=true', function(){",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "  pm.expect(json.ok).to.be.true;",
+              "});",
+              "pm.environment.set('countBefore', (json.concerts||[]).length);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Créer un concert (+ image)",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "const ts = Date.now();",
+              "pm.environment.set('ts', ts.toString());",
+              "pm.environment.set('ville', `testville-${ts}`);",
+              "pm.environment.set('lieu',  `arena-${ts}`);",
+              "pm.environment.set('date', '2025-06-01');",
+              "pm.environment.set('heure','20:30');"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Création 200/201 OK + ok=true', function(){",
+              "  pm.expect([200, 201]).to.include(pm.response.code);",
+              "  pm.expect(json.ok).to.be.true;",
+              "});",
+              "if (json.id) { pm.environment.set('concertId', json.id); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" } 
+        ],
+        "url": "{{baseUrl}}/admin/api/concerts",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "ville",       "value": "{{ville}}", "type": "text" },
+            { "key": "date",        "value": "{{date}}",  "type": "text" },
+            { "key": "heure",       "value": "{{heure}}", "type": "text" },
+            { "key": "lieu",        "value": "{{lieu}}",  "type": "text" },
+            { "key": "placesDispo", "value": "1000",      "type": "text" },
+            { "key": "prixDebout",  "value": "40",        "type": "text" },
+            { "key": "prixAssis",   "value": "50",        "type": "text" },
+            { "key": "image",       "type": "file", "src": "paris.jpg" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "GET - Récupérer l'ID du concert créé",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admin/api/concerts"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.environment.set('countAfter', (json.concerts||[]).length);",
+              "pm.test('La liste a augmenté', function(){",
+              "  pm.expect(Number(pm.environment.get('countAfter'))).to.be.above(Number(pm.environment.get('countBefore')));",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PATCH - Mettre à jour le stock",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/admin/api/concerts/{{concertId}}/stock",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"placesDispo\": 999}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Stock 200 OK', function(){ pm.expect(pm.response.code).to.eql(200); });",
+              "pm.test('placesDispo = 999', function(){ pm.expect(json.concert.placesDispo).to.eql(999); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "POST - Doublon (doit échouer 409)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": "{{baseUrl}}/admin/api/concerts",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "ville",       "value": "{{ville}}", "type": "text" },
+            { "key": "date",        "value": "{{date}}",  "type": "text" },
+            { "key": "heure",       "value": "{{heure}}", "type": "text" },
+            { "key": "lieu",        "value": "{{lieu}}",  "type": "text" },
+            { "key": "placesDispo", "value": "1000",      "type": "text" }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Doublon → 409', function(){ pm.expect(pm.response.code).to.eql(409); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "GET - Détail du concert",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admin/api/concerts/{{concertId}}"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('200 OK + bon id', function(){",
+              "  pm.expect(pm.response.code).to.eql(200);",
+              "  pm.expect(json.concert.id).to.eql(Number(pm.environment.get('concertId')));",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: abgyhujd
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      mongo:
+        image: mongo:6
+        ports: ["27017:27017"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/abgyhujd?schema=public
+      - name: Run Newman
+        run: |
+          npx newman run postman/abgyhujd_admin_concerts_v2.json \
+            --env-var baseUrl=http://localhost:5000 \
+            --reporters=cli,html \
+            --reporter-html-export newman/report.html &
+          npm start & sleep 3
+          wait
+      - uses: actions/upload-artifact@v4
+        with:
+          name: newman-report
+          path: newman/report.html

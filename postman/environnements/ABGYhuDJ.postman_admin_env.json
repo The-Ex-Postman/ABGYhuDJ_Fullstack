@@ -1,0 +1,14 @@
+{
+  "id": "abgyhudj-env-admin",
+  "name": "ABGYhuDJ - Local Admin",
+  "values": [
+    { "key": "baseUrl",       "value": "http://localhost:5000", "enabled": true },
+    { "key": "adminEmail",    "value": "dev.ABGYhuDJ@gmail.com",     "enabled": true },
+    { "key": "adminPassword", "value": "Im@keProjects4DWWM%333",         "enabled": true },
+    { "key": "ville",         "value": "", "enabled": true },
+    { "key": "lieu",          "value": "", "enabled": true },
+    { "key": "date",          "value": "", "enabled": true },
+    { "key": "heure",         "value": "", "enabled": true },
+    { "key": "concertId",     "value": "", "enabled": true }
+  ]
+}

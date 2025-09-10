@@ -1,0 +1,53 @@
+{% extends "layout.twig" %}
+
+{% block title %}ABGYhuDJ | Connexion{% endblock %}
+
+{% block extra_styles %}<link rel="stylesheet" href="/public/styles/intro.css">{% endblock %}
+
+{% block intro_loader %}
+  <div id="intro-loader">
+    <img src="/public/assets/logo-abgyhudj.png" alt="Logo" class="spin" />
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% if accountDeleted %}
+    <div class="alert success">Votre compte a bien été supprimé ✅</div>
+  {% endif %}
+<div class="connect-bloc">
+    <form method="post" class="connect-form">
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" required>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit" class="bouton-achat">Connexion</button>
+    </form>
+    {% if app.request.query.get('error') %}
+      <p class="error-message" style="display: none;"></p>
+    {% endif %}
+    <p style="margin-top:.5rem">
+      <a href="/mot-de-passe-oublie">Mot de passe oublié ?</a>
+    </p>
+    {% if resetDone %}
+      <p class="alert-message">Votre mot de passe a été réinitialisé. Vous pouvez vous connecter.</p>
+    {% endif %}
+    <a href="inscription">Créer un compte</a>
+</div>
+  {% if expired %}
+    <p class="session-error">Session expirée</p>
+  {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="/public/scripts/script-intro.js"></script>
+  <script src="/public/scripts/script-connexion.js"></script>
+  <script src="/public/scripts/script-accueil.js"></script>
+  <script>
+  const userId = localStorage.getItem('currentUser');
+  if (userId) {
+    localStorage.removeItem(`panierABGY_${userId}`);
+    localStorage.removeItem('currentUser');
+  }
+</script>
+{% endblock %}
+

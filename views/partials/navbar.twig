@@ -1,0 +1,30 @@
+<nav class="navbar">
+    {% if session.user %}
+    <div class="compte-wrapper">
+      <button class="toggle-compte">Menu ▼</button>
+      <div class="compte-menu">
+        <a href="/accueil">🏠 Accueil </a>
+        <a href="/mon-compte">🪪​ Mon compte</a>
+        <a class="panier-link" id="open-panier" href="#" data-popup-panier>🛒​ Mon panier</a>
+        <a href="/logout">🔴 Déconnexion</a>
+      </div>
+    </div>
+    {% endif %}
+</nav>
+
+<div class="popup-panier hidden" id="popup-panier">
+  <div class="popup-panier-contenu">
+    <button class="close-btn" aria-label="Fermer">&times;</button>
+    <h2>Votre panier</h2>
+    <div id="detail-panier">
+      <p class="nombre-places-p">Aucun billet sélectionné</p>
+      <p class="prix-places-p"></p>
+      <p class="total-p"></p>
+    </div>
+    <a class="btn-panier if-filed" href="/formulaire">Finaliser les achats</a>
+    <a class="btn-panier if-empty" href="/billeterie">Billeterie</a>
+    <a href="#" class="btn-clear danger" id="empty-cart">Vider le panier</a>
+  </div>
+</div>
+
+<script src="/public/scripts/script-navbar.js"></script>

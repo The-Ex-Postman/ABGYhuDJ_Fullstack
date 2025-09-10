@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ABGYhuDJ | Finalisation des achats</title>
+        <meta name="description" content="ABGYhuDJ, le groupe phare du Youtube français en live dans toute la France cet été 2025 ! Venez acheter vos places pour cet événement à ne pas manquer !">
+        <meta name="keywords" content="ABGYhuDJ, YouTube, concert, live, France, tickets">
+        <link rel="stylesheet" href="/public/styles/style-formulaire.css">
+        <script src="https://kit.fontawesome.com/2a288c724f.js" crossorigin="anonymous"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com"><!--Roboto-->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com"> <!--Open Sans-->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <header>
+            <h1>FINALISATION DES ACHATS</h1>
+        </header>
+        {% include "partials/navbar.twig" %}
+        <main class="container">
+            <div class="nav-hold">
+            </div>
+            <div class="hidden alerte">
+                <button class="close-alerte" aria-label="Fermer">&times;</button>
+                <p>Attention, ce site présente un groupe de musique, des personnes et des concerts fictifs. Les formulaires présentant des champs réalistes, nous vous demandons par mesure de sécurité de ne saisir aucune vraie information personnelle ou bancaire.<br><br>(Ce popup disparaîtra après 10 secondes.)</p>
+            </div>
+            <div class="main-container">
+                <div class="part">
+                    <h2 class="second-title">Récapitulatif de la commande</h2>
+                    <div class="info-bloc">
+                        <div class="contenu-panier">
+                            <p class="nombre-places">Aucun billet sélectionné</p>
+                            <p class="prix-place">Prix unitaire : 0€</p>
+                            <p class="total">Total à payer : 0€</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="part">
+                    <h2 class="second-title">Facturation</h2>
+                    <a href="/mon-compte" class="btn-modif-infos">Modifier mes infos</a>
+                    <div class="info-bloc">
+                        <div class="ligne">
+                            <p style="text-transform: uppercase;">{{ user.nom }}</p>
+                            <p>{{ user.prenom }}</p>
+                        </div>
+                        <div class="ligne">
+                            <p>{{ user.adresse }}, {{user.ville }}</p>
+                        </div>
+                        <div class="ligne">
+                            <p class="champ-statique">email: {{ user.email }}</p>
+                            <p class="champ-statique">tel: {{ user.tel }}</p>
+                        </div>
+                    </div>
+                </div>
+                <button aria-haspopup="dialog" aria-controls="popup-paiement" aria-expanded="false" class="valider" id="btn-valider">Valider et payer</button>
+                <p class="message-erreur hidden" aria-live="polite"></p>
+            </div>
+            <div class="popup-overlay hidden" id="popup-overlay">
+                <div role="dialog" aria-modal="true" aria-labelledby="titre-paiement" class="saisie-cb" id="popup-paiement">
+                    <button class="fermer-popup" id="popup-close" aria-label="Fermer la fenêtre de paiement">&times;</button>
+                    <h3>Informations de paiement</h3>
+                    <form method="post">
+                        <label for="numero-carte">Numéro de carte :</label>
+                        <input type="text" id="numero-carte" name="numero-carte" required>
+                        <label for="date-exp">Date d'expiration :</label>
+                        <input type="text" id="date-exp" name="date-exp" required>
+                        <label for="cvv">CVV :</label>
+                        <input type="text" id="cvv" name="cvv" required>
+                        <button type="submit" class="pay">Paiement</button>
+                    </form>
+                    <p>Paiement sécurisé <i class="fa-solid fa-money-check"></i><i class="fa-solid fa-shield"></i></p>
+                </div>
+            </div>
+            <div class="aside">
+                <a href="accueil" class="back-button">Accueil</a>
+                <a href="billeterie" class="back-button">Billetterie</a>
+            </div>
+        </main>
+        <script src="/public/scripts/script-formulaire.js"></script>
+    </body>
+</html>

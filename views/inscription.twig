@@ -1,0 +1,31 @@
+{% extends "layout.twig" %}
+
+{% block title %}AGBYhuDJ | Inscription{% endblock %}
+
+{% block content %}
+<h2 class="connect-title">Inscription</h2>
+<div class="register-block">
+    <form class="register-form" method="post" action="/inscription">
+        <label for="reg-email">Email :</label>
+        <input class="reg-input" type="email" id="reg-email" name="email" required>
+        <p class="error-message" id="error-email" style="display: none;"></p>
+        <label for="reg-pw">Mot de Passe :</label>
+        <input class="reg-input" type="password" id="reg-pw" name="password" required>
+        <label for="confirm-pw">Confirmer le mot de passe :</label>
+        <input class="reg-input" type="password" id="confirm-pw" name="confirmPassword" required>
+        <p class="error-message" id="error-confirm" style="display: none;"></p>
+        <p class="cu-paragraph"><input type="checkbox" id="cu_accept" name="cuAccept" required>J'accepte les <a class="down-link" href="#" data-popup="cu">conditions d'utilisation</a></p>
+        <button class="bouton-achat" type="submit">S'inscrire</button>
+    </form>
+</div>
+<a class="retour" href="/">Retour à la connexion</a>
+<div role="dialog" aria-modal="true" class="hidden popup cu">
+    <h3>Conditions d'utilisation</h3>
+    <p>Ce site présente un groupe de musique et des concerts fictifs. Les informations fournies ne doivent pas être considérées comme réelles.<br><br>Aucune transaction réelle ne sera réalisée, et aucune information bancaire ne sera collectée ou stockée. Néanmoins, par mesure de sécurité, il est tout de même conseillé de ne pas entrer de réelles coordonnées bancaires.<br><br>Les informations personnelles que vous pourrez enregistrer dans votre espace de profil fonctionneront également si elles sont fictives. Par sécurité, il est également conseillé de ne pas indiquer vos vraies coordonnées.</p>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="/public/scripts/script-inscription.js"></script>
+  <script src="/public/scripts/script-accueil.js"></script>
+{% endblock %}

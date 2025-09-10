@@ -1,0 +1,43 @@
+{% extends "layout.twig" %}
+
+{% block title %}ABGYhuDJ | Accueil{% endblock %}
+
+{% block content %}
+  {% include "partials/navbar.twig" %}
+
+  <section class="ligne ligne1">
+    <h2 class="gros-titre">
+      <img src="public/assets/logo-abgyhudj.png" alt="logo du groupe AGBYhuDJ">
+      <span lang="en">FRENCH TOUR</span>
+    </h2>
+  </section>
+
+  <section class="ligne ligne2">
+    <div class="presentation">
+      <p>ABGYhuDJ pose les caméras et les vidéos pour une tournée live inédite dans toute la France ! Retrouvez-nous du 1er Juin au 6 Juillet 2025 pour vivre cette expérience unique avec nous !</p>
+    </div>
+  </section>
+
+  <section class="ligne ligne3">
+    <div class="bandeau-dates">
+      <ul>
+        {% for c in concerts %}
+        <li>{{ c.dateLabel }} : {{ c.ville }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="achat-tickets">
+      <a href="billeterie" class="bouton-achat">BILLETTERIE</a>
+    </div>
+  </section>
+
+  <section class="ligne ligne4">
+    <div class="go-youtube">
+      <p>Tu ne nous connais pas encore ou tu n'es pas encore abonné à notre chaîne YouTube ABGYhuDJ Band ? Pas de soucis, (re)viens faire un tour par ici !</p>
+      <i class="fa-solid fa-arrow-right fleche"></i>
+      <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">
+        <img class="logo-ytb" src="public/assets/logo-youtube.png" alt="Le logo de YouTube">
+      </a>
+    </div>
+  </section>
+{% endblock %}

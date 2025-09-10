@@ -1,0 +1,93 @@
+{% extends "layout.twig" %}
+
+{% block title %}ABGYhuDJ | Profil {% endblock %}
+
+{% block extra_styles %}<link rel="stylesheet" href="/public/styles/style-profile.css">{% endblock %}
+
+{% block content %}
+    {% include "partials/navbar.twig" %}
+    <h2 class="gros-titre">Mon Profil</h2>
+    {% if query.missing_info %}
+        <div class="alert-message">Veuillez compléter vos informations avant de passer commande.</div>
+    {% endif %}
+    <div class="profile-cont">
+        <form id="form-profile" action="/mon-compte" method="POST">
+            <div class="profile-actions">
+                <button type="button" id="btn-edit">✏️ Modifier</button>
+                <button type="button" id="btn-cancel" class="hidden">Annuler</button>
+                <button type="submit" id="btn-save" class="hidden">Enregistrer</button>
+            </div>
+            <div class="profile-info gd-prenom">
+                <label for="prenom">Prénom :</label>
+                <p class="champ-statique" data-champ="prenom">{{ user.prenom|default('-') }}</p>
+                <input class="champ-editable hidden" type="text" name="prenom" id="prenom" value="{{ user.prenom|default('') }}">
+            </div>
+            <div class="profile-info gd-nom">
+                <label for="nom">Nom :</label>
+                <p class="champ-statique" data-champ="nom">{{ user.nom|default('-') }}</p>
+                <input class="champ-editable hidden" type="text" name="nom" id="nom" value="{{ user.nom|default('') }}">
+            </div>
+            <div class="profile-info gd-email">
+                <label for="email">E-mail :</label>
+                <p class="champ-statique" data-champ="email">{{ user.email|default('-') }}</p>
+                <input class="champ-editable hidden" type="email" name="email" id="email" value="{{ user.email|default('') }}">
+            </div>
+            <div class="profile-info gd-adresse">
+                <label for="adresse">Adresse :</label>
+                <p class="champ-statique" data-champ="adresse">{{ user.adresse|default('-') }}</p>
+                <input class="champ-editable hidden" type="text" name="adresse" id="adresse" value="{{ user.adresse|default('') }}">
+            </div>
+            <div class="profile-info gd-ville">
+                <label for="ville">Ville et code postal :</label>
+                <p class="champ-statique" data-champ="ville">{{ user.ville|default('-') }}</p>
+                <input class="champ-editable hidden" type="text" name="ville" id="ville" value="{{ user.ville|default('') }}">
+            </div>
+            <div class="profile-info gd-tel">
+                <label for="tel">Téléphone :</label>
+                <p class="champ-statique" data-champ="tel">{{ user.tel|default('-') }}</p>
+                <input class="champ-editable hidden" type="tel" name="tel" id="tel" value="{{ user.tel|default('') }}">
+            </div>
+            <button type="submit" class="btn-submit hidden">Enregistrer</button>
+        </form>
+    </div>
+    <div class="historique">
+        <h3 class="gros-titre">Historique des achats</h3>
+        <div class="contenu-histo">
+            {% set list = commandes|default([]) %}
+
+            {% if list|length == 0 %}
+            <p>Vous n'avez pas encore de commandes.</p>
+            {% endif %}
+
+            {% for c in commandes %}
+            <div class="card">
+                <img src="/public/assets/logo-abgyhudj.png">
+                <article class="commande">
+                    <h4>Le {{ c.dateCommande|date('d/m/Y') }}<br>Montant : {{ c.total }}€</h4>
+                    <ul>
+                    {% for t in c.tickets %}
+                        <li>{{ t.concert.ville }}<br>{{ t.quantite }} places {{ t.type|lower }}</li>
+                    {% endfor %}
+                    </ul>
+                </article>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <a class="delete-link" id="open-delete" href="#" data-popup-delete>Supprimer mon compte</a>
+    <div class="popup-delete hidden" id="popup-delete">
+  <div class="popup-delete-contenu">
+    <h5>Êtes-vous sûr de vouloir supprimer votre compte ?</h5>
+    <div class="choice-btns">
+        <button class="non-btn" aria-label="Fermer">Non</button>
+        <form action="/delete-account" method="post">
+            <button class="oui-btn" type="submit">Oui</button>
+        </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="/public/scripts/script-profile.js"></script>
+{% endblock %}

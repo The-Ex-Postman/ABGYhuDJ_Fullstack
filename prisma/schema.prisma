@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int          @id @default(autoincrement())
+  email           String       @unique
+  password        String
+  role            Role         @default(USER)
+  dateInscription DateTime     @default(now())
+  commandes       Commande[]   // relation 1-N
+
+  prenom          String?
+  nom             String?
+  adresse         String?
+  ville           String?
+  tel             String?
+
+  resetTokenHash  String?
+  resetTokenExp   DateTime?
+  passwordChangedAt DateTime?
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Concert {
+  id             Int        @id @default(autoincrement())
+  ville          String
+  date           DateTime
+  lieu           String
+  placesDispo    Int
+  prixDebout     Decimal?    @db.Decimal(10,2)
+  prixAssis      Decimal?    @db.Decimal(10,2)
+  tickets        Ticket[]   
+
+  @@unique([ville, date, lieu], map: "concert_unique_slot")
+  @@index([date], map: "idx_concert_date")
+}
+
+model Commande {
+  id             Int        @id @default(autoincrement())
+  user           User       @relation(fields: [userId], references: [id])
+  userId         Int
+  dateCommande   DateTime   @default(now())
+  total          Decimal    @db.Decimal(10,2)
+  status         Status     @default(VALIDEE)
+  tickets        Ticket[]   
+
+  @@index([userId, dateCommande], map: "idx_commande_userid_date")
+}
+
+enum Status {
+  EN_COURS
+  VALIDEE
+}
+
+model Ticket {
+  id             Int        @id @default(autoincrement())
+  concert        Concert    @relation(fields: [concertId], references: [id])
+  concertId      Int
+  commande       Commande?  @relation(fields: [commandeId], references: [id])
+  commandeId     Int?
+  type           PlaceType
+  quantite       Int
+  prixUnitaire   Decimal    @db.Decimal(10,2)
+
+  @@index([concertId], map: "idx_ticket_concert")
+  @@index([commandeId], map: "idx_ticket_commande")
+}
+
+enum PlaceType {
+  DEBOUT
+  ASSIS
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ABGYhuDJ{% endblock %}</title>
+  <meta name="description" content="ABGYhuDJ, le groupe phare du Youtube français...">
+  <meta name="keywords" content="ABGYhuDJ, YouTube, concert, live, France, tickets">
+  <link rel="stylesheet" href="public/styles/style-accueil.css">
+  <script src="https://kit.fontawesome.com/2a288c724f.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:...&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:...&display=swap" rel="stylesheet">
+  {% block extra_styles %}{% endblock %}
+</head>
+
+<body>
+  {%block intro_loader %}{% endblock %}
+  <header>
+    <h1>ABGYhuDJ <span lang="en">LIVE EVENT</span></h1>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <div class="liens-footer">
+      <a class="down-link" href="#" data-popup="m-l">Mentions légales</a>
+      <div role="dialog" aria-modal="true" class="hidden popup m-l">
+        <p id="popup-title-m-l">ABGYhuDJ-Band : Société Anonyme au capital de 0€.</p>
+      </div>
+      <a class="down-link" href="#" data-popup="i-g">Infos générales</a>
+      <div role="dialog" aria-modal="true" class="hidden popup i-g">
+        <p id="popup-title-i-g">Ce site est une vitrine.</p>
+      </div>
+      <a class="down-link" href="#" data-popup="cgv">Conditions générales de vente</a>
+      <div role="dialog" aria-modal="true" class="hidden popup cgv">
+        <p id="popup-title-cgv">Aucun achat réel n'est réalisable.</p>
+      </div>
+      <a class="down-link" href="#" data-popup="partenaires">Partenaires</a>
+      <div role="dialog" aria-modal="true" class="hidden popup partenaires">
+        <img id="popup-title-partenaires" src="public/assets/logo-youtube.png" alt="">
+        <p>Ce partenariat n'est pas réel.</p>
+      </div>
+    </div>
+    <p class="copyright">&copy; 2025 ABGYhuDJ-Band SA - Tous droits réservés</p>
+  </footer>
+
+  {% block extra_scripts %}
+  <script src="public/scripts/script-accueil.js"></script>
+  {% endblock %}
+</body>
+</html>

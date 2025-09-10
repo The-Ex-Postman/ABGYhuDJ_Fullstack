@@ -1,0 +1,12 @@
+node_modules/
+.env
+/src/generated/prisma
+
+postman/environments/ABGYhuDJ.postman_environment.json
+postman/environments/ABGYhuDJ.postman_admin_env.json
+
+!postman/environments/*.example.postman_environment.json
+
+/newman/
+/**/report_admin.html
+/**/report_user.html

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ABGYhuDJ | Billeterie</title>
+        <meta name="description" content="ABGYhuDJ, le groupe phare du Youtube français en live dans toute la France cet été 2025 ! Venez acheter vos places pour cet événement à ne pas manquer !">
+        <meta name="keywords" content="ABGYhuDJ, YouTube, concert, live, France, tickets">
+        <link rel="stylesheet" href="/public/styles/style-billetterie.css">
+        <script src="https://kit.fontawesome.com/2a288c724f.js" crossorigin="anonymous"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com"><!--Roboto-->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com"> <!--Open Sans-->
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    </head>
+    <body data-userid="{{ user.id }}">
+        <header>
+            <h1>BILLETERIE</h1>
+        </header>
+        {% include "partials/navbar.twig" %}
+        <main class="grille">
+        {% for c in concerts %}
+            <div class="vignette"
+                data-id="{{ c.id }}"
+                data-ville="{{ c.ville }}"
+                data-prix-debout="{{ c.prixDebout|default(40) }}"
+                data-prix-assis="{{ c.prixAssis|default(50) }}"
+                data-stock-total="{{ c.placesDispo|default(0) }}">
+            <img class="ville-vue" src="{{ c.image }}" alt="Une vue de {{ c.ville }}">
+            <div class="texte-vignette">
+                <h3>{{ c.ville }}</h3>
+                <p>{{ c.dateLabel }}<br>{{ c.lieu }}</p>
+            </div>
+
+            <button aria-expanded="false"
+                    aria-controls="id-{{ c.slug }}"
+                    class="deroulant"><i class="fa-solid fa-caret-down"></i></button>
+
+            <div class="toogle-deroulant" id="id-{{ c.slug }}">
+                <h5>Tarif debout : {{ c.prixDebout|default(40) }}€</h5>
+                <form>
+                <label for="quantite-debout-{{ c.id }}">Quantité :</label>
+                <input type="number" id="quantite-debout-{{ c.id }}" name="quantite-debout-{{ c.id }}">
+                </form>
+
+                <h5>Tarif assis : {{ c.prixAssis|default(50) }}€</h5>
+                <form>
+                <label for="quantite-assis-{{ c.id }}">Quantité :</label>
+                <input type="number" id="quantite-assis-{{ c.id }}" name="quantite-assis-{{ c.id }}">
+                </form>
+
+                <button class="ajout-panier" {{ c.placesDispo == 0 ? 'disabled' : '' }}>
+                {{ c.placesDispo == 0 ? 'Complet' : 'Ajouter au panier' }}
+                </button>
+                <p class="message-erreur"></p>
+            </div>
+            </div>
+        {% endfor %}
+        </main>
+        <footer>
+            <a href="formulaire" class="bouton-achat">Finaliser mes achats</a>
+            <a href="accueil" class="retour">Accueil</a>
+        </footer>
+        <script src="/public/scripts/script-billetterie.js"></script>
+    </body>
+</html>

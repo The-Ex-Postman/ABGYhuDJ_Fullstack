@@ -1,0 +1,589 @@
+/* Main Structure */
+[hidden] {display: none !important; }
+
+body{
+    background: url(../assets/bg-onde-sonore.jpg) no-repeat center center;
+    background-size: cover;
+    background-color: #000000;
+}
+header{
+    background-image: linear-gradient(to bottom, #000000 0%, #000000 80%, #ff0000 100%);
+    height: auto;
+    max-height: 10rem;
+    position: relative;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-size: 64px;
+    font-weight: bold;
+    color: #ff0000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+header h1 {
+    margin-left: 5rem;
+    display: flex;
+    align-self: center;
+    justify-self: center;
+}
+footer{
+    max-height: 20rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+    font-family: "Roboto", sans-serif;
+    position: relative;
+}
+
+/* découpage main */
+.grille {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5rem 3rem;
+    padding: 5rem;
+    justify-items: center;
+}
+
+/* Objets */
+.panier {
+    position: absolute;
+    bottom: 1rem;
+    right: 5rem;
+    background-color: #ffffff;
+    color: #ff0000;
+    font-family: "Roboto", sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 1rem;
+    border: 1px solid #ff0000;
+    border-radius: 10px;
+}
+.panier:hover {
+    cursor: pointer;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+.vignette {
+    position: relative;
+    background-color: #000000bb;
+    border: 2px solid #ff0000;
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    color: #ffffff;
+    font-family: "Open Sans", sans-serif;
+    box-shadow: 2px 2px 12px #ff000080;
+    width: 40rem;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.toogle-deroulant {
+  max-height: 0;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  transform: scaleY(0);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  transform-origin: top;
+}
+.ville-vue {
+    display: flex;
+    justify-self: flex-start;
+    align-self: center;
+    width: 15em;
+    height: 15em;
+    border-radius: 12px;
+}
+.texte-vignette {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+    flex: 1;
+}
+.texte-vignette h3 {
+    font-size: 1.6rem;
+    margin: 0;
+    border-radius: 100px;
+}
+.texte-vignette p {
+    font-size: 1.2rem;
+    margin: 0;
+}
+.deroulant {
+    align-self: flex-end;
+    margin-top: 0.5rem;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.deroulant:hover {
+    transform: scale(1.4);
+    text-shadow:
+        1px 1px 0 #ff0000,
+        -1px 1px 0 #ff0000,
+        1px -1px 0 #ff0000,
+        -1px -1px 0 #ff0000;}
+.bouton-achat {
+    background-color: #ff0000;
+    color: #ffffff;
+    font-size: 36px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    border-radius: 28px;
+    padding: 2rem;
+}
+.bouton-achat:hover {
+    cursor: pointer;
+    background-color: #ff7070;
+    box-shadow: 2px 2px 8px #ffffff;
+}
+.retour {
+    position: absolute;
+    right: 5rem;
+    background-color: #ffffff;
+    color: #ff0000;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 1rem;
+    border: 1px solid #ff0000;
+    border-radius: 10px;
+}
+.retour:hover {
+    cursor: pointer;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+/* Interfaces dynamiques */
+
+.toogle-deroulant.visible {
+    max-height: 500px;
+    opacity: 1;
+    transform: scaleY(1);
+    gap: 0.5rem;
+    overflow: visible;
+}
+input {
+    border-radius: 10px;
+    background-color: #ffffff;
+}
+.ajout-panier {
+    margin-top: 1.5rem;
+    background-color: #ffffff;
+    color: #ff0000;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border: 1px solid #ff0000;
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+.ajout-panier:hover {
+    cursor: pointer;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px solid #ffffff; 
+}
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+  filter: grayscale(1);
+}
+.message-erreur {
+    color: #ff0000;
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-top: 0.5rem;
+    display: none;
+}
+input.erreur {
+    border: 2px solid #ff0000;
+    background-color: #fff0f0;
+}
+
+.mini-bouton-achat {
+    margin-top: 1rem;
+    background-color: #ff0000;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    border: none;
+    border-radius: 28px;
+    padding: 0.5rem;
+}
+.mini-bouton-achat:hover {
+    cursor: pointer;
+    background-color: #ff7070;
+    box-shadow: 2px 2px 8px #ffffff;
+}
+
+/* Navbar */
+
+.navbar {
+  text-align: center;
+  color: white;
+  font-family: "Roboto", sans-serif;
+}
+
+.toggle-compte {
+  background: none;
+  border: none;
+  color: white;
+  font-weight: bold;
+  font-size: xx-large;
+  background-color: #222;
+  border-radius: 8px;
+  border: 1px solid #ff0000;
+  box-shadow: 1px 1px 4px #ff0000, -1px 1px 4px #ff0000, 1px -1px 4px #ff0000, -1px -1px 4px #ff0000;
+  border-radius: 4px;
+  padding: 5px;
+  display: flex;
+  align-self: flex-end;
+  justify-self: flex-start;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-compte:hover {
+    cursor: pointer;
+    background-color: #ff7070;
+}
+
+.compte-menu {
+  display: none;
+  background-color: #222;
+  text-align: center;
+  width: 20dvw;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 2rem;
+  padding: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5rem;
+  border: 1px solid #ff0000;
+  box-shadow: 1px 1px 8px #ff0000;
+  border-radius: 5px;
+  z-index: 9999;
+}
+
+.compte-menu a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  margin: 2rem 0;
+}
+
+.compte-menu a:hover {
+    transform: scale(1.1);
+    text-shadow: 1px 1px 2px #ffffff;
+}
+
+.compte-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.popup-panier {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-panier.hidden {
+  display: none;
+}
+
+.popup-panier-contenu {
+  background-color: #222;
+  color: #ffffff;
+  text-align: center;
+  padding: 10px;
+  margin-top: 5px;
+  padding: 1rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 1.5rem;
+  border: 1px solid #ff0000;
+  box-shadow: 1px 1px 8px #ff0000;
+  border-radius: 5px;
+}
+
+.popup-panier-contenu .close-btn {
+  position: relative;
+  color: #ff0000;
+  font-size: large;
+  font-weight: bold;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  justify-self: flex-end;
+}
+
+.btn-panier {
+  background-color: #ff0000;
+  color: #fff;
+  padding: 1rem 2rem;
+  border: 2px solid #fff;
+  border-radius: 20px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: 2px 2px 8px #000;
+  transition: background-color 0.2s;
+}
+
+.btn-panier:hover {
+    cursor: pointer;
+    background-color: #ff7070;
+    box-shadow: 2px 2px 8px #ffffff;
+}
+
+.btn-clear {
+    background-color: #ffffff;
+    color: #ff0000;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 1rem;
+    border: 1px solid #ff0000;
+    border-radius: 20px;
+}
+
+.btn-clear:hover {
+    cursor: pointer;
+    background-color: #ff0000;
+    color: #ffffff;
+    border: 1px solid #ffffff;
+}
+
+/* Responsive */
+
+@media screen and (max-width: 1366px) { /* Version PC compact */
+
+    .header {
+        font-size: 30px;
+    }
+
+    .vignette {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .ville-vue {
+        max-width: 35%;
+        max-height: 160px;
+    }
+
+    .texte-vignette h3,
+    .texte-vignette p {
+        font-size: 1rem;
+    }
+
+    .grille {
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem 1rem;
+        margin: auto;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 1024px) { /* Version tablettes et petits laptops */
+
+    header {
+        font-size: 30px;
+    }
+
+    .panier {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+    }
+
+    .grille {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        margin: auto;
+        justify-content: center;
+    }
+
+    .vignette {
+        max-width: 80%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .ville-vue {
+        width: 40%;
+        height: auto;
+        max-height: 180px;
+    }
+
+    .texte-vignette {
+        text-align: left;
+        align-items: flex-start;
+        padding-left: 1rem;
+    }
+
+    .deroulant {
+        align-self: flex-end;
+    }
+
+    .panier {
+        font-size: 1rem;
+    }
+
+    .bouton-achat {
+        font-size: 28px;
+    }
+    .retour {
+        position: absolute;
+        right: 1rem;
+    }
+}
+
+@media screen and (max-width: 768px) { /* Version smartphones */
+
+    header {
+        font-size: 100%;
+    }
+
+    .panier {
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        padding: 0.5rem 1rem;
+    }
+
+    .grille {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    padding: 2rem;
+    }
+
+    .vignette {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    align-items: center;
+    padding: 1rem;
+    box-sizing: border-box;
+    }
+
+    .ville-vue {
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    }
+  .texte-vignette {
+    text-align: center;
+    align-items: center;
+  }
+
+  .deroulant {
+    align-self: center;
+  }
+
+  .bouton-achat {
+    font-size: 20px;
+  }
+
+  .retour {
+    position: absolute;
+    right: 1rem;
+    font-size: 100%;
+  }
+
+    .popup-panier {
+        width: 90dvw;
+    }
+
+    .popup-panier-contenu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .btn-panier, .btn-clear {
+        width: 40%;
+        margin: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) { /* Version micro-smartphones */
+
+  header {
+    font-size: 90%;
+    padding: 0.5rem;
+  }
+
+  .vignette {
+    display: flex;
+    flex-direction: column;
+    max-width: 95vw;
+    padding: 0.5rem;
+  }
+
+  .ville-vue {
+    width: 100px;
+    height: 100px;
+  }
+
+  .texte-vignette p,
+  .texte-vignette h3 {
+    font-size: 0.9rem;
+  }
+
+  .panier {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.7rem;
+  }
+
+  .bouton-achat {
+    font-size: 0.9rem;
+    padding: 20px;
+  }
+
+  .retour {
+    position: absolute;
+    right: 0.5rem;
+    font-size: 0.8rem;
+    padding: 10px;
+  }
+}

@@ -1,0 +1,119 @@
+CHOIX DES OUTILS
+
+| Critère                | Node.js + Express                                     | PHP + Laravel                                                      | Notre choix                                                           |
+| ---------------------- | ----------------------------------------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| Langage                | JavaScript, unifié front/back                         | PHP côté back, JS côté front                                       | ✅ JS unifié = cohérence et gain de temps                              |
+| Poids / performance    | Léger, non-bloquant, asynchrone                       | Plus lourd, synchrone, moins fluide sans tuning                    | ✅ API plus réactive avec Node                                         |
+| Courbe d’apprentissage | Express est minimaliste, très modulaire               | Laravel est puissant mais imposant, avec beaucoup de magie interne | ✅ Express laisse plus de contrôle, parfait pour un projet pédagogique |
+| Écosystème             | Parfait pour les APIs REST, très riche en middlewares | Laravel a beaucoup d’outils intégrés, mais moins “API-first”       | ✅ Express te permet d’apprendre à tout configurer toi-même            |
+| Intégration front JS   | Directe (même langage)                                | Nécessite une API ou du templating server (Blade)                  | ✅ Tu réutilises ton code JS côté client & serveur                     |
+
+
+| Critère       | Prisma                                   | Sequelize / TypeORM                 | Doctrine (PHP)                         | Notre choix                                               |
+| ------------- | ---------------------------------------- | ----------------------------------- | -------------------------------------- | --------------------------------------------------------- |
+| Intuitivité   | Très lisible, DSL propre (schema.prisma) | Plus verbeux et moins typé          | Complexe, très verbeux                 | ✅ Prisma : plus rapide à prendre en main, et plus moderne |
+| Migrations    | Automatisées avec aperçu clair           | Souvent manuelles ou moins visibles | Très rigide, lourd pour petits projets | ✅ Prisma gère tout en douceur                             |
+| Documentation | Ultra claire et interactive              | Moins intuitive (Sequelize)         | Complexe et orientée entreprise        | ✅ Idéal pour un projet de formation                       |
+| Typage        | Génère des types auto pour TypeScript    | Moins solide sur ce plan            | PHP → pas TS                           | ✅ Prisma est fait pour Node moderne                       |
+
+
+| Critère            | PostgreSQL                         | MySQL                                      | Notre choix                                          |
+| ------------------ | ---------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| Conformité SQL     | Très stricte, fidèle au standard   | Plus permissif (peut masquer erreurs)      | ✅ PostgreSQL = meilleur pour apprendre proprement    |
+| Fonctions avancées | Très riche (types JSON, géo, CTE…) | Moins riche (sur certains types)           | ✅ PG offre + de souplesse pour des données complexes |
+| Compatibilité ORM  | Excellente avec Prisma             | Compatible aussi                           | ✅ Prisma est conçu *d’abord* pour PG                 |
+| Stabilité          | Excellente pour projets complexes  | Très bien aussi, mais parfois moins rigide | ✅ On privilégie la rigueur du standard SQL           |
+
+
+| Critère          | MongoDB                            | Autres NoSQL                                                                               | Notre choix                                                |
+| ---------------- | ---------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| Structure        | JSON souple (documents dynamiques) | Firebase = cloud & temps réel ; Redis = clé-valeur ; Cassandra = gros volume distribué     | ✅ MongoDB = adapté à nos logs/statistiques sans contrainte |
+| Apprentissage    | Facile à comprendre                | Firebase demande de gérer tout dans le cloud ; Redis est bas niveau ; Cassandra trop lourd | ✅ MongoDB : parfait pour un étudiant fullstack             |
+| Intégration Node | Mongoose, très bien intégré        | Firebase = SDK ; Redis = brut                                                              | ✅ Node + Mongoose = fluide                                 |
+
+
+Conclusion :
+
+- Langage : Node.js + Express
+- ORM : Prisma
+- DB SQL : PostgreSQL
+- DB NoSQL : MongoDB + Mongoose
+
+
+SHEMA DE BASE DE DONNEES
+
+SQL
+| registered (**users**)       | concerts            | commandes                        | tickets                              |
+| ---------------------------- | ------------------- | -------------------------------- | ------------------------------------ |
+| id **PK**                    | id **PK**           | id **PK**                        | id **PK**                            |
+| email - varchar (unique)     | ville - varchar     | user\_id - **FK → users.id**     | concert\_id - **FK → concerts.id**   |
+| password - varchar           | date - date         | date\_commande - datetime        | commande\_id - **FK → commandes.id** |
+| role - enum(user/admin)      | lieu - varchar      | total - decimal                  | quantite - int                       |
+| date\_inscription - datetime | places\_dispo - int | status - enum(en\_cours/validée) | prix\_unitaire - decimal             |
+|                              | prix - decimal      |                                  |                                      |
+
+NoSQL
+| logs (**collection**)                            | paniers\_temp                             | stats\_concerts                  |
+| ------------------------------------------------ | ----------------------------------------- | -------------------------------- |
+| \_id **PK (ObjectId)**                           | \_id **PK (ObjectId)**                    | \_id **PK (ObjectId)**           |
+| type - string *(connexion, erreur, admin, etc.)* | user\_id - string *(ou session\_id)*      | concert\_id - string *(réf SQL)* |
+| timestamp - datetime                             | items - array of `{concert_id, quantite}` | vues - int                       |
+| user\_id - string *(réf SQL)*                    | timestamp - datetime                      | clics\_panier - int              |
+| ip - string                                      |                                           | achats - int                     |
+| route - string                                   |                                           |                                  |
+| payload - object *(optionnel)*                   |                                           |                                  |
+
+
+AVANCEMENT DU PROJET 
+
+🧱 1. Initialisation du projet
+Création d’un dossier structuré avec :
+
+src/ contenant les sous-dossiers routes, controllers, models, middlewares, services, utils, validators
+
+Fichiers root : .env, server.js, app.js, package.json, README.md
+
+Installation des dépendances :
+express, dotenv, mongoose, prisma, @prisma/client, nodemon, helmet, cors...
+
+-----------------------------------------------------------------------------------------------------------------------------------
+
+🗃️ 2. Base de données SQL (PostgreSQL)
+📐 Création du fichier schema.prisma avec les modèles SQL (User, Concert, Commande, Ticket)
+
+⚙️ Configuration de la connexion à PostgreSQL via Prisma (DATABASE_URL dans .env)
+
+🧱 Migration appliquée avec succès → base PostgreSQL visible dans pgAdmin
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+🍃 3. Base de données NoSQL (MongoDB)
+Installation de MongoDB + Compass
+
+Création du fichier mongo.js pour connecter Mongoose
+
+Connexion réussie à MongoDB avec URI locale
+
+Ajout de la variable MONGO_URI dans .env
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+🧾 4. Logs dynamiques (MongoDB)
+Création du modèle Mongoose Log (type, date, user_id, ip, route, payload…)
+
+Création d’un middleware global logger.js
+
+Loggue automatiquement chaque requête entrante
+
+Middleware branché sur l’app Express dans app.js
+
+Test validé via route /test → logs bien insérés dans MongoDB 🎯
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+🧪 Tests Postman
+Route /test appelée avec succès
+
+Réponse "OK !" obtenue
+
+Log de la requête visible en base Mongo

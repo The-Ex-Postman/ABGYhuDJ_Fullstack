@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "ABGYhuDJ \u2014 Checkout (PROFILE \u2192 CSRF \u2192 ADD \u2192 CONFIRM)",
+    "_postman_id": "8e976fd5-35b3-4a9e-8ce4-1bbf8b0b57b7",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Flow",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"email\": \"{{userEmail}}\", \"password\": \"{{userPassword}}\"}"
+            },
+            "url": "{{baseUrl}}/api/auth/login"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ensure profile (form \u2192 /mon-compte)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "prenom",
+                  "value": "{{prenom}}",
+                  "type": "text"
+                },
+                {
+                  "key": "nom",
+                  "value": "{{nom}}",
+                  "type": "text"
+                },
+                {
+                  "key": "email",
+                  "value": "{{userEmail}}",
+                  "type": "text"
+                },
+                {
+                  "key": "adresse",
+                  "value": "{{adresse}}",
+                  "type": "text"
+                },
+                {
+                  "key": "ville",
+                  "value": "{{ville}}",
+                  "type": "text"
+                },
+                {
+                  "key": "tel",
+                  "value": "{{tel}}",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": "{{baseUrl}}/mon-compte"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('bearerToken');",
+                  "if (t) pm.request.headers.upsert({key:'Authorization', value:'Bearer '+t});",
+                  "const ty = (pm.variables.get('type') || '').toString().toLowerCase();",
+                  "pm.variables.set('typeLower', ty);",
+                  "const csrf = pm.cookies.get('csrfToken') || pm.environment.get('csrfToken');",
+                  "if (csrf) pm.request.headers.upsert({key:'x-csrf-token', value: csrf});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200 ou 302',()=>pm.expect([200,302]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check user info (optional)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/check-user-info"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('bearerToken');",
+                  "if (t) pm.request.headers.upsert({key:'Authorization', value:'Bearer '+t});",
+                  "const ty = (pm.variables.get('type') || '').toString().toLowerCase();",
+                  "pm.variables.set('typeLower', ty);",
+                  "const csrf = pm.cookies.get('csrfToken') || pm.environment.get('csrfToken');",
+                  "if (csrf) pm.request.headers.upsert({key:'x-csrf-token', value: csrf});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "try { const j = pm.response.json(); console.log('check-user-info:', j); } catch(e){}",
+                  "pm.test('200/404 ok',()=>pm.expect([200,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Prime CSRF (GET /billeterie)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/billeterie"
+          }
+        },
+        {
+          "name": "Clear cart",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/cart/clear"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('bearerToken');",
+                  "if (t) pm.request.headers.upsert({key:'Authorization', value:'Bearer '+t});",
+                  "const ty = (pm.variables.get('type') || '').toString().toLowerCase();",
+                  "pm.variables.set('typeLower', ty);",
+                  "const csrf = pm.cookies.get('csrfToken') || pm.environment.get('csrfToken');",
+                  "if (csrf) pm.request.headers.upsert({key:'x-csrf-token', value: csrf});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Add to cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"concertId\": {{concertId}}, \"quantite\": {{quantite}}, \"type\": \"{{typeLower}}\", \"prixUnitaire\": {{prixUnitaire}} }"
+            },
+            "url": "{{baseUrl}}/api/cart/add"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('bearerToken');",
+                  "if (t) pm.request.headers.upsert({key:'Authorization', value:'Bearer '+t});",
+                  "const ty = (pm.variables.get('type') || '').toString().toLowerCase();",
+                  "pm.variables.set('typeLower', ty);",
+                  "const csrf = pm.cookies.get('csrfToken') || pm.environment.get('csrfToken');",
+                  "if (csrf) pm.request.headers.upsert({key:'x-csrf-token', value: csrf});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Confirm checkout (JSON Card + CSRF)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"numeroCarte\": \"4242424242424242\", \"dateExp\": \"12/29\", \"cvv\": \"123\", \"cardLast4\": \"4242\", \"exp\": \"12/29\"}"
+            },
+            "url": "{{baseUrl}}/api/checkout/confirm"
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const t = pm.environment.get('bearerToken');",
+                  "if (t) pm.request.headers.upsert({key:'Authorization', value:'Bearer '+t});",
+                  "const ty = (pm.variables.get('type') || '').toString().toLowerCase();",
+                  "pm.variables.set('typeLower', ty);",
+                  "const csrf = pm.cookies.get('csrfToken') || pm.environment.get('csrfToken');",
+                  "if (csrf) pm.request.headers.upsert({key:'x-csrf-token', value: csrf});"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "console.log('Status:', pm.response.code);",
+                  "try { const j = pm.response.json(); console.log('JSON:', j); }",
+                  "catch(e){ console.log('BODY:', pm.response.text()); }",
+                  "pm.test('200',()=>pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/logout"
+          }
+        }
+      ]
+    }
+  ]
+}
