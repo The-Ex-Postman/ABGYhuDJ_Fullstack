@@ -1,8 +1,11 @@
-exports.requireAdmin = (req, res, next) => {
-  const u = req.session?.user;
-  const isAdmin = u && (u.isAdmin || u.role === 'ADMIN');
+const { isAdminUser } = require('../controllers/auth.controller');
 
-  if (isAdmin) return next();
+exports.requireAdmin = (req, res, next) => {
+  const user = req.session?.user;
+
+  if (isAdminUser(user)) {
+    return next();
+  }
 
   // détecter si la requête attend du JSON
   const wantsJSON =
@@ -11,7 +14,7 @@ exports.requireAdmin = (req, res, next) => {
     req.originalUrl.includes('/api');
 
   if (wantsJSON) {
-    return res.status(403).json({ ok:false, message:'Accès administrateur requis' });
+    return res.status(403).json({ ok: false, message: 'Accès administrateur requis' });
   }
   return res.redirect('/login');
 };

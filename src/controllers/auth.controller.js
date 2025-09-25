@@ -87,4 +87,4 @@ const login = async (req, res) => {
     return res.status(500).render('index', { error: 'Erreur serveur. Réessaie plus tard.' });
   }
 };
-module.exports = { login, register };
+module.exports = { login, register, isAdminUser };

@@ -25,6 +25,7 @@ exports.getProfile = async (req, res, next) => {
   }
 };
 
+// Mise à jour du profil utilisateur
 exports.postProfile = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
