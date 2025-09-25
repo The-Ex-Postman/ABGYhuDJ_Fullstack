@@ -38,6 +38,8 @@ Back-end **Node.js/Express** + **Prisma (PostgreSQL)** pour les données critiqu
 - **MongoDB** + Mongoose – panier temporaire
 - **Nodemailer** – emails (Ethereal en dev / Gmail App Password en prod)
 - Middlewares utiles : `helmet`, `cors`, `express-session`, rate-limit (recommandé en prod)
+- [Architecture](docs/diagramme-architecture.jpg)
+- [Use cases](docs/uses-case.jpg)
 
 ## Arborescence
 ```
@@ -130,6 +132,7 @@ npm run dev
 - Le schéma est défini dans `prisma/schema.prisma`.
 - Les migrations Prisma se trouvent dans `prisma/migrations`.
 - Le **DDL complet** est dans `prisma/sql/00_create_all.sql`.
+- Le diagramme de la BDD SQL est dans `docs/schema-postgre.jpg`.
 
 ### Tables / Enums
 - **User** (email unique, password hash, profil)
