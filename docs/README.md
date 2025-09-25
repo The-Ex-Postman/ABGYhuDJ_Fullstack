@@ -41,7 +41,7 @@ Application Node.js/Express organisée en MVC combinant :
 - **PostgreSQL + Prisma** pour les données métiers (User, Concert, Commande, Ticket),
 - **MongoDB (Mongoose)** pour le panier (stockage volatile lié à l'utilisateur),
 - **Nodemailer** pour l'email de confirmation de commande
-Schémas :
+- Schémas :
 - Architecture : `docs/diagramme-architecture.jpg`
 - Use cases : `docs/uses-case.jpg`
 - Modèle de données : `docs/schema-postgre.jpg`
