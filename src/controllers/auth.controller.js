@@ -5,28 +5,32 @@ const prisma = new PrismaClient();
 const Log = require('../models/log');
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean);
 
+const isEmail = (s='') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim().toLowerCase());
+const MIN_PWD = 6;
+
 const isAdminUser = (user) => {
   return user?.role === 'ADMIN' || user?.isAdmin === true || ADMIN_EMAILS.includes(user?.email);
 }
 
 const register = async (req, res) => {
-  const { email, password, confirmPassword } = req.body;
+  let { email, password, confirmPassword } = req.body || {};
+  email = String(email || '').trim().toLowerCase();
 
+  if (!isEmail(email)) {
+    return res.status(400).json({ field:'email', message:'❌ Email invalide.' });
+  }
+  if (typeof password !== 'string' || password.length < MIN_PWD) {
+    return res.status(400).json({ field:'password', message:`❌ Mot de passe trop court (min ${MIN_PWD}).` });
+  }
   if (password !== confirmPassword) {
-  return res.status(400).json({
-    field: 'confirm',
-    message: '❌ Les mots de passe ne correspondent pas.'
-  });
-}
+    return res.status(400).json({ field:'confirm', message:'❌ Les mots de passe ne correspondent pas.' });
+  }
 
   try {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
-  return res.status(409).json({
-    field: 'email',
-    message: '❌ Cet email est déjà utilisé.'
-  });
-}
+      return res.status(409).json({ field:'email', message:'❌ Cet email est déjà utilisé.' });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await prisma.user.create({
@@ -53,6 +57,11 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  email = String(email || '').trim().toLowerCase();
+
+  if (!isEmail(email) || typeof password !== 'string' || password.length < MIN_PWD) {
+    return res.status(400).json({ message: '❌ Identifiants invalides' });
+  }
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });

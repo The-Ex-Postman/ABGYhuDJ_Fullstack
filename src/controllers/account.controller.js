@@ -1,12 +1,17 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const isEmail = (s='') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim().toLowerCase());
+const isPhoneFR = (s='') => /^(\+33|0)[1-9](\d{2}){4}$/.test(String(s).replace(/\s+/g,''));
+const clamp = (s, n) => (s && s.length > n ? s.slice(0, n) : s);
+
 const emptyToNull = (v) => {
   if (v === undefined || v === null) return null;
   const t = String(v).trim();
   return t === '' ? null : t;
 };
 
+// Exporter les infos de la table User vers la vue profile
 exports.getProfile = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
@@ -31,17 +36,35 @@ exports.postProfile = async (req, res, next) => {
     const id = Number(req.session?.user?.id);
     if (!id) return res.redirect('/login');
 
+    // normalisation + limites
+    const email = req.body.email ? req.body.email.trim().toLowerCase() : undefined;
+    if (email !== undefined && !isEmail(email)) {
+      const user = await prisma.user.findUnique({ where: { id } });
+      return res.status(400).render('profile', {
+        user, historique: [], page:'profile', title:'Mon compte',
+        errorEmail: "Adresse e-mail invalide."
+      });
+    }
+
+    const tel = emptyToNull(req.body.tel);
+    if (tel && !isPhoneFR(tel)) {
+      const user = await prisma.user.findUnique({ where: { id } });
+      return res.status(400).render('profile', {
+        user, historique: [], page:'profile', title:'Mon compte',
+        errorTel: "Téléphone invalide (FR attendu)."
+      });
+    }
+
     const data = {
-      prenom:  emptyToNull(req.body.prenom),
-      nom:     emptyToNull(req.body.nom),
-      email:   req.body.email ? req.body.email.trim() : undefined,
-      adresse: emptyToNull(req.body.adresse),
-      ville:   emptyToNull(req.body.ville),
-      tel:     emptyToNull(req.body.tel),
+      prenom:  clamp(emptyToNull(req.body.prenom), 100),
+      nom:     clamp(emptyToNull(req.body.nom), 100),
+      email, 
+      adresse: clamp(emptyToNull(req.body.adresse), 255),
+      ville:   clamp(emptyToNull(req.body.ville), 100),
+      tel
     };
 
     const updated = await prisma.user.update({ where: { id }, data });
-
     // rafraîchir la session pour que le reste du site ait les valeurs à jour
     req.session.user = {
       id: updated.id,
@@ -67,26 +90,26 @@ exports.postProfile = async (req, res, next) => {
   }
 };
 
+// Suppression du compte utilisateur
 exports.deleteAccount = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
     if (!id) return res.redirect('/login');
 
-    // 🔒 Sécurité minimale: on empêche qu’un admin se supprime lui-même si tu le souhaites
+    // On empêche qu’un admin se supprime lui-même si tu le souhaites
     if (req.session.user.role === 'ADMIN') return res.status(403).send('Forbidden');
 
-    // 🧨 Supprimer les données liées AVANT l’utilisateur (si pas de cascade)
-    // Adapte les deleteMany selon tes tables (tickets, commandes, etc.)
+    // Supprimer les données liées AVANT l’utilisateur (si pas de cascade)
     await prisma.$transaction([
       prisma.commande?.deleteMany ? prisma.commande.deleteMany({ where: { userId: id } }) : Promise.resolve(),
-      // prisma.ticket?.deleteMany({ where: { userId: id } }), // si tu as une table Ticket
+      prisma.ticket?.deleteMany({ where: { userId: id } }), 
       prisma.user.delete({ where: { id } }),
     ]);
 
-    // 🧹 Purge du panier Mongo
+    // Purge du panier Mongo
     try { await Cart.deleteOne({ userId: id }); } catch (_) {}
 
-    // 🔚 Fin de session + redirection
+    // Fin de session + redirection
     req.session.destroy((err) => {
       if (err) return next(err);
       res.clearCookie('connect.sid');

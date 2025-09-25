@@ -129,17 +129,19 @@ exports.confirmCheckout = async (req, res, next) => {
 
     // Email
     const { cardLast4, exp } = req.body || {};
+    cardLast4 = /^\d{4}$/.test(String(cardLast4 || '')) ? String(cardLast4) : null;
+    exp = /^\d{2}\/\d{2}$/.test(String(exp || '')) ? String(exp) : null;
     try {
       await mailer.sendMail({
         to: user.email,
         subject: 'Confirmation de votre commande – ABGYhuDJ',
         text:
-`Bonjour ${user.prenom || ''} ${user.nom || ''},
-Merci pour votre commande !
-Total : ${total.toFixed(2)}€
-${cardLast4 ? `Paiement (carte ••••${cardLast4}${exp ? `, exp ${exp}` : ''}).` : ''}
-À très vite,
-L’équipe ABGYhuDJ`,
+          `Bonjour ${user.prenom || ''} ${user.nom || ''},
+          Merci pour votre commande !
+          Total : ${total.toFixed(2)}€
+          ${cardLast4 ? `Paiement (carte ••••${cardLast4}${exp ? `, exp ${exp}` : ''}).` : ''}
+          À très vite,
+          L’équipe ABGYhuDJ`,
         html: `
           <p>Bonjour ${user.prenom || ''} ${user.nom || ''},</p>
           <p>Merci pour votre commande !</p>

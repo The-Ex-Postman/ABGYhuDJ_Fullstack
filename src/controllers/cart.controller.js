@@ -6,7 +6,8 @@ const prisma = new PrismaClient();
 // GET /api/cart/get
 
 exports.getCart = async (req, res) => {
-  const userId = req.session.user.id;
+  const userId = req.session?.user?.id;
+  if (!userId) return res.status(401).json({ ok:false, message:'Non authentifié' });
   const cart = await Cart.findOne({ userId }).lean();
   const items = cart?.items || [];
 
@@ -35,7 +36,8 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   try {
-    const userId = req.session.user.id;
+    const userId = req.session?.user?.id;
+    if (!userId) return res.status(401).json({ ok:false, message:'Non authentifié' });
 
     const rawItems = Array.isArray(req.body?.items) ? req.body.items : [req.body];
     if (!rawItems.length) {
