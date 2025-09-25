@@ -5,7 +5,7 @@ Back-end **Node.js/Express** + **Prisma (PostgreSQL)** pour les données critiqu
 
 ## Sommaire
 - [Fonctionnalités](#fonctionnalités)
-- [Architecture & stack](#architecture--stack)
+- [Architecture](#architecture)
 - [Arborescence](#arborescence)
 - [Prérequis](#prérequis)
 - [Configuration (.env)](#configuration-env)
@@ -31,15 +31,66 @@ Back-end **Node.js/Express** + **Prisma (PostgreSQL)** pour les données critiqu
 - Historique des commandes (profil).
 - Profil admin : Gestion des stocks et des concerts.
 
-## Architecture & stack
-- **Node.js / Express** (routes pages + API)
-- **Twig** (templates), JS Vanilla (front)
-- **PostgreSQL** + **Prisma** (ORM) – vérité des données
-- **MongoDB** + Mongoose – panier temporaire
-- **Nodemailer** – emails (Ethereal en dev / Gmail App Password en prod)
-- Middlewares utiles : `helmet`, `cors`, `express-session`, rate-limit (recommandé en prod)
-- Architecture : Diagramme dans `docs/diagramme-architecture.jpg`
-- Use cases : Diagramme dans `docs/uses-case.jpg`
+## Architecture
+
+### Vue d'ensemble
+Application Node.js/Express organisée en MVC combinant :
+- **SSR** via **Twig** pour les pages,
+- **API JSON** pour les actions asynchrones (panier, checkout),
+- Authentification par session (cookie signé + store côté serveur),
+- **PostgreSQL + Prisma** pour les données métiers (User, Concert, Commande, Ticket),
+- **MongoDB (Mongoose)** pour le panier (stockage volatile lié à l'utilisateur),
+- **Nodemailer** pour l'email de confirmation de commande
+Schémas :
+- Architecture : `docs/diagramme-architecture.jpg`
+- Use cases : `docs/uses-case.jpg`
+- Modèle de données : `docs/schema-postgre.jpg`
+
+### Composants principaux
+**Router (Express)**
+Regroupe les routes par domaine : `/auth`, `/account`, `/api/cart`, `/checkout`,...
+**Middlewares**
+- `requireAuth` : Protège les routes privées (redirige et renvoie `401`JSON).
+- `requireAdmin` : RBAC via `isAdminUser` (rôle, flag, liste d'e-mails).
+- Validation d'inputs côté serveur (sanitisation, formats, bornes).
+**Controllers**
+- auth: inscription/connexion, hash bcrypt, enrichit la session (`isAdmin` via `isAdminUser`).
+- account: mise à jour du profil avec contrôles.
+- cart: opérations de panier (MongoDB) + garde-fous.
+- order: checkout transactionnel (recalcul serveur des prix, décrément du stock, création commande + ticket, purge du panier, envoie d'e-mail).
+**Vues (Twig)**
+Pages SSR + formulaires et `fetch` côté client
+**Données**
+- PostgreSQL (Prisma) : Table `User`, `Concert`, `Commande`, `Ticket`.
+- MongoDB(Mongoose) : collections `Cart` (contenu temporaire par userId), `Log` (exploitation à venir pour les statistiques de trafic utilisateur).
+
+### Cycle d'une requête
+1. Client (page Twig / JS) --> Route Express
+2. Passage par Middlewares (auth, admin, validations)
+3. Controller exécute la logique :
+- lit/écrit via Prisma (PostgreSQL) ou Mongoose (MongoDB),
+- rend une vue Twig ou renvoie du JSON
+- peut déclencher Nodemailer pour l'e-mail
+4. Réponse --> Client (HTML/SSR ou JSON)
+
+### Session et rôles
+- Session signée envoyée en cookie (ID de session)
+- Données utilisateur côté serveur (id, email isAdmin)
+- Vérification d'accès admin centralisée via isAdminUser(user) (source de vérité unique)
+
+### Sécurité et validation
+- Hash des mots de passe avec bcrypt
+- Validations front (UX) et serveur (sécurité) : e-mail, mot de passe, taille des champs, quantité, format de paiement fictif
+- Recalcul intégral des montants côté serveur (le client ne fait que proposer)
+- Secrets/paramètres en variables d'environnement (`.env`); modèles dans `.env.example`
+- Accès admin limité par rôle/flag/liste d'e-mails
+
+### Erreurs et conventions de réponse
+- SSR: redirections + messages dans la vue en cas d'erreur utilisateur
+- API: statuts HTTP cohérents et payloads normalisés
+
+### Limites actuelles et pistes d'évolution
+- Enrichir les fonctionnalités Admin (étude des logs, stats de vente)
 
 ## Arborescence
 ```
@@ -132,7 +183,6 @@ npm run dev
 - Le schéma est défini dans `prisma/schema.prisma`.
 - Les migrations Prisma se trouvent dans `prisma/migrations`.
 - Le **DDL complet** est dans `prisma/sql/00_create_all.sql`.
-- Le diagramme de la BDD SQL est dans `docs/schema-postgre.jpg`.
 
 ### Tables / Enums
 - **User** (email unique, password hash, profil)
