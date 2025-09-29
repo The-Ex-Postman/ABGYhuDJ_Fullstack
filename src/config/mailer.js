@@ -8,10 +8,10 @@ async function getTransporter() {
   const {
     SMTP_HOST,
     SMTP_PORT = '587',
-    SMTP_SECURE,                 // "true"/"false"
+    SMTP_SECURE,                 
     SMTP_USER,
     SMTP_PASS,
-    SMTP_IGNORE_TLS_ERRORS,      // "true" pour dev local avec certs self-signed
+    SMTP_IGNORE_TLS_ERRORS,      
   } = process.env;
 
   if (SMTP_HOST) {
