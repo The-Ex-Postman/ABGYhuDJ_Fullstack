@@ -56,7 +56,7 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { email, password } = req.body;
+  let { email, password } = req.body || {};
   email = String(email || '').trim().toLowerCase();
 
   if (!isEmail(email) || typeof password !== 'string' || password.length < MIN_PWD) {
