@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id              Int          @id @default(autoincrement())
-  email           String       @unique
+  email           String       @unique @db.Citext
   password        String
   role            Role         @default(USER)
   dateInscription DateTime     @default(now())

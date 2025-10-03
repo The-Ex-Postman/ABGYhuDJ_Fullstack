@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const { PrismaClient} = require('@prisma/client');
 const prisma = new PrismaClient();
 const Log = require('../models/log');
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean);
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 
 const isEmail = (s='') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim().toLowerCase());
 const MIN_PWD = 6;
@@ -27,7 +27,7 @@ const register = async (req, res) => {
   }
 
   try {
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
     if (existingUser) {
       return res.status(409).json({ field:'email', message:'❌ Cet email est déjà utilisé.' });
     }
@@ -64,7 +64,7 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
 
     if (!user) {
       await Log.create({ type:'connexion', ip:req.ip, route:'/login', payload:{ email, erreur:'Email inconnu' }});

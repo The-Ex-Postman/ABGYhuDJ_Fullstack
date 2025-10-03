@@ -1,0 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS citext;
+
+UPDATE "User" SET "email" = LOWER("email");
+
+ALTER TABLE "User" ALTER COLUMN "email" SET DATA TYPE CITEXT;
