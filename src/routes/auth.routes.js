@@ -15,16 +15,4 @@ router.get('/me', verifyToken, (req, res) => {
   });
 });
 
-//traitement de l'inscription
-router.post('/inscription', async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    await authController.register(req, res);
-  } catch (err) {
-    console.error("Erreur dans la route POST /inscription :", err);
-    res.status(500).render('inscription', { error: "Erreur serveur. Réessaie plus tard." });
-  }
-});
-
 module.exports = router;
