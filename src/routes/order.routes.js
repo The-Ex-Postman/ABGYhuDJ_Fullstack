@@ -30,16 +30,5 @@ router.post('/api/checkout/confirm',
   requireApi,
   orderController.confirmCheckout
 );
-//historique
-router.get('/mes-commandes', requireApi, async (req, res, next) => {
-  try {
-    const commandes = await prisma.commande.findMany({
-      where: { userId: req.session.user.id },
-      orderBy: { dateCommande: 'desc' },
-      include: { tickets: { include: { concert: true } } }
-    });
-    res.render('mes-commandes', { commandes, page: 'mes-commandes', title: 'Mes commandes' });
-  } catch (e) { next(e); }
-});
 
 module.exports = router;

@@ -31,6 +31,8 @@ router.get('/mon-compte', requirePage, async (req, res, next) => {
 
 router.post('/mon-compte', requireApi, accountController.postProfile);
 
+router.get('/mes-commandes', requireApi, accountController.getPastOrders);
+
 router.post('/delete-account', requireApi, accountController.deleteAccount);
 
 module.exports = router;

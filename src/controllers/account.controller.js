@@ -90,6 +90,26 @@ exports.postProfile = async (req, res, next) => {
   }
 };
 
+//historique
+exports.getPastOrders = async (req, res, next) => {
+  try {
+    const userId = req.session?.user?.id;
+    if (!userId) return res.redirect('/login');
+
+    const commandes = await prisma.commande.findMany({
+      where: { userId },
+      orderBy: { dateCommande: 'desc' },
+      include: { tickets: { include: { concert: true } } }
+    });
+
+    res.render('mes-commandes', {
+      commandes,
+      page: 'mes-commandes',
+      title: 'Mes commandes'
+    });
+  } catch (e) { next(e); }
+};
+
 // Suppression du compte utilisateur
 exports.deleteAccount = async (req, res, next) => {
   try {
