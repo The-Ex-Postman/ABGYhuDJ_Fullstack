@@ -87,7 +87,7 @@ const login = async (req, res) => {
 
     // ➤ calcul de la destination
     const wanted = req.session.returnTo || req.query.next;
-    const nextUrl = wanted || (admin ? '/admin-board' : '/accueil');
+    const nextUrl = wanted || (admin ? '/admin' : '/accueil');
 
     return res.status(200).json({ ok: true, user: { id: user.id, email: user.email, role: user.role }, message: 'Connexion réussie', nextUrl });
 

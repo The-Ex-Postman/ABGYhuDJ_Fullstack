@@ -28,7 +28,7 @@ document.querySelector('.connect-form').addEventListener('submit', async (e) => 
       errorMessage.textContent = data.message || 'Erreur inconnue';
       errorMessage.style.display = 'block';
     } else {
-      const redirectTo = data.nextUrl || (data.isAdmin ? '/admin-board' : '/accueil') || '/accueil';
+      const redirectTo = data.nextUrl || (data.isAdmin ? '/admin' : '/accueil') || '/accueil';
       window.location.assign(redirectTo);
     }
 

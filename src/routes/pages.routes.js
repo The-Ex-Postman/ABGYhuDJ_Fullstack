@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   const u = req.session.user;
   if (!u) return res.redirect('/login');
   const admin = u.isAdmin || u.role === 'ADMIN';
-  return res.redirect(admin ? '/admin-board' : '/accueil');
+  return res.redirect(admin ? '/admin' : '/accueil');
 });
 
 router.get('/inscription', (req, res) => {
@@ -100,9 +100,6 @@ router.get('/billeterie', requirePage, async (req, res, next) => {
     res.render('billeterie', { concerts: enriched, page: 'billeterie', title: 'Billetterie' });
   } catch (e) { next(e); }
 });
-
-const { requireAdmin } = require('../middlewares/requireAdmin');
-router.get('/admin-board', requireAdmin,  (req, res) => res.redirect('/admin'));
 
 //route de déconnexion
 
