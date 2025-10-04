@@ -15,7 +15,7 @@ router.get('/mot-de-passe-oublie', (req, res) => {
 router.post('/mot-de-passe-oublie', async (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase();
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const user = await prisma.user.findFirst({ where: { email: { equals: email, mode: 'insensitive' } } });
     if (user) {
       const raw = crypto.randomBytes(32).toString('hex'); // token brut
       const hash = crypto.createHash('sha256').update(raw).digest('hex');
@@ -61,16 +61,16 @@ router.post('/reinitialiser-mot-de-passe', async (req, res) => {
     const { token, email, password, confirm } = req.body;
     if (!token || !email) return res.status(400).send('Lien invalide');
 
-    if (!password || password.length < 8 || password !== confirm) {
+    if (!password || password.length < 6 || password !== confirm) {
       return res.render('reset-password', {
         title:'Réinitialiser le mot de passe', token, email,
-        error: 'Mot de passe invalide (8+ caractères) ou confirmation différente.',
+        error: 'Mot de passe invalide (6+ caractères) ou confirmation différente.',
         ok: false
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: String(email).toLowerCase() }
+    const user = await prisma.user.findFirst({
+      where: { email: { equals: email, mode: 'insensitive' } }
     });
     const hash = crypto.createHash('sha256').update(String(token)).digest('hex');
     const now  = new Date();
