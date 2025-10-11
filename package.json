@@ -8,7 +8,7 @@
     "start": "node src/server.js",
     "start:ci": "node src/server.js",
     "postinstall": "prisma generate",
-    "build": "prisma generate && prisma migrate deploy"
+    "build": "echo \"[BUILD] start\" && prisma generate && prisma migrate deploy"
   },
   "engines": {
     "node": ">=20"
