@@ -7,11 +7,12 @@
     "dev": "nodemon --ext js,json,twig,css --watch src --watch views --watch public src/server.js",
     "start": "node src/server.js",
     "start:ci": "node src/server.js",
-    "vercel-build": "prisma generate",
     "postinstall": "prisma generate",
-    "build": "echo \"No build step\""
+    "build": "prisma generate"
   },
-  "engines": {"node": ">=20"},
+  "engines": {
+    "node": ">=20"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@prisma/client": "^6.13.0",
     "bcrypt": "^6.0.0",
+    "cookie-session": "^2.1.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
@@ -41,5 +43,3 @@
     "nodemon": "^3.1.10"
   }
 }
-
-
