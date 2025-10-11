@@ -5,5 +5,7 @@
   "routes": [
     { "src": "/public/(.*)", "dest": "/public/$1" },
     { "src": "/(.*)", "dest": "/api/index.js" }
-  ]
+  ],
+  "buildCommand": "npm run build",
+  "installCommand": "npm ci"
 }
