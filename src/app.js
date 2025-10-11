@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
+const ROOT = process.cwd();
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.use(
 // Config moteur de template Twig
 const { twig } = require('twig');
 app.set('view engine', 'twig');
-app.set('views', path.join(__dirname, '..', 'views'));
+app.set('views', path.join(ROOT, 'views'));
 
 // Middlewares de base
 app.use(cors());
@@ -65,7 +66,7 @@ app.use(session({
   }
 }));
 
-app.use('/public', express.static(path.join(__dirname, '..', 'public')));
+app.use('/public', express.static(path.join(ROOT, 'public')));
 
 app.use((req, res, next) => {
   res.locals.session = req.session;

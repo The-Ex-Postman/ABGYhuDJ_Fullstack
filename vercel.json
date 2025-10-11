@@ -1,0 +1,9 @@
+{
+  "functions": {
+    "api/index.js": { "runtime": "nodejs20.x" }
+  },
+  "routes": [
+    { "src": "/public/(.*)", "dest": "/public/$1" },
+    { "src": "/(.*)", "dest": "/api/index.js" }
+  ]
+}

@@ -6,8 +6,11 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --ext js,json,twig,css --watch src --watch views --watch public src/server.js",
     "start": "node src/server.js",
-    "start:ci": "node src/server.js"
+    "start:ci": "node src/server.js",
+    "postinstall": "prisma generate",
+    "build": "echo \"No build step\""
   },
+  "engines": {"node": ">=20"},
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -37,3 +40,5 @@
     "nodemon": "^3.1.10"
   }
 }
+
+
