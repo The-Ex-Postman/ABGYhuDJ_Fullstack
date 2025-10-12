@@ -2,12 +2,6 @@
   "version": 2,
   "buildCommand": "npm run build",
   "installCommand": "npm ci",
-<<<<<<< HEAD
-=======
-  "functions": {
-    "api/index.js": { "runtime": "@vercel/node@20.x" }
-  },
->>>>>>> 620f9e4349e97ad797b938296e37995d5185e38d
   "routes": [
     { "src": "/public/(.*)", "dest": "/public/$1" },
     { "src": "/(.*)", "dest": "/api/index.js" }
