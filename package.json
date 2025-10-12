@@ -7,8 +7,9 @@
     "dev": "nodemon --ext js,json,twig,css --watch src --watch views --watch public src/server.js",
     "start": "node src/server.js",
     "start:ci": "node src/server.js",
-    "build": "echo \"[BUILD] start\" && prisma generate && prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "build": "echo \"[BUILD] start\" && prisma generate",
+    "postinstall": "prisma generate",
+    "postbuild": "prisma migrate deploy"
   },
   "engines": {
     "node": ">=20"
