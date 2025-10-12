@@ -3,7 +3,7 @@
   "buildCommand": "npm run build",
   "installCommand": "npm ci",
   "functions": {
-    "api/index.js": { "runtime": "@vercel/node20.x" }
+    "api/index.js": { "runtime": "@vercel/node@20.x" }
   },
   "routes": [
     { "src": "/public/(.*)", "dest": "/public/$1" },
