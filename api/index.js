@@ -1,5 +1,5 @@
-const app = require('/src/app');
-const connectMongoDB = require('/src/config/mongo');
+const app = require('../src/app');
+const connectMongoDB = require('../src/config/mongo');
 
 let mongoReady;
 module.exports = async (req, res) => {
