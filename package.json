@@ -9,7 +9,10 @@
     "start:ci": "node src/server.js",
     "build": "echo \"[BUILD] start\" && prisma generate",
     "postinstall": "prisma generate",
-    "postbuild": "prisma migrate deploy"
+    "seed": "node prisma/seed.js"
+  },
+  "prisma": {
+    "seed": "npm run seed"
   },
   "engines": {
     "node": ">=20"
