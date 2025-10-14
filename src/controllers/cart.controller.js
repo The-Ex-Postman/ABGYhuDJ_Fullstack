@@ -1,5 +1,5 @@
 const Cart = require('../models/cart');
-const prisma = require('../server');
+const { prisma } = require('../server');
 
 
 // GET /api/cart/get
