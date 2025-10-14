@@ -62,7 +62,7 @@ app.use(session({
     maxAge: ONE_HOUR,
     httpOnly: true,
     sameSite: 'lax',
-    secure: app.get('env') === 'production' || process.env.VERCEL,
+    secure: true,
   }
 }));
 
