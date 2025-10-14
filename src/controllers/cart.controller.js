@@ -1,6 +1,5 @@
 const Cart = require('../models/cart');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../server');
 
 
 // GET /api/cart/get
@@ -72,9 +71,7 @@ exports.addToCart = async (req, res) => {
       items.push({ concertId, type, quantite, prixUnitaire });
     }
 
-    // ============================
-    // 🔒 STOCK CHECK (placesDispo)
-    // ============================
+    // STOCK CHECK
 
     const requestedByConcert = new Map();
     for (const it of items) {
@@ -111,9 +108,8 @@ exports.addToCart = async (req, res) => {
       }
     }
 
-    // =================================
-    // ✅ Upsert panier + merge
-    // =================================
+    // Upsert panier + merge
+
     const cart = existingCart || new Cart({ userId, items: [] });
 
     for (const it of items) {

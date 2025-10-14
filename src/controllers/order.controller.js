@@ -1,5 +1,5 @@
-const { PrismaClient, Prisma } = require('@prisma/client');
-const prisma = new PrismaClient();const Cart = require('../models/cart');
+const prisma = require('../server');
+const Cart = require('../models/cart');
 const mailer = require('../config/mailer');
 
 exports.getFormulaire = async (req, res, next) => {

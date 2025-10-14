@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { PrismaClient} = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../server');
 const Log = require('../models/log');
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 
@@ -80,12 +79,12 @@ const login = async (req, res) => {
     // Log succès
     await Log.create({ type:'connexion', ip:req.ip, user_id:user.id, route:'/login', payload:{ email }});
 
-    // ➤ enrichir la session
+    // enrichir la session
     const admin = isAdminUser(user);
     req.session.user = { id: user.id, email: user.email, role: user.role, isAdmin: admin };
     req.session.userId = user.id;
 
-    // ➤ calcul de la destination
+    // calcul de la destination
     const wanted = req.session.returnTo || req.query.next;
     const nextUrl = wanted || (admin ? '/admin' : '/accueil');
 
