@@ -1,6 +1,6 @@
 //connexion à MongoDB
 require('dotenv').config();
-const app = require('express')();
+const app = require('./app');
 const connectMongoDB = require('./config/mongo');
 
 const  { PrismaClient } = require('@prisma/client');
