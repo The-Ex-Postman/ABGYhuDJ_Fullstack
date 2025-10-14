@@ -128,7 +128,7 @@ exports.confirmCheckout = async (req, res, next) => {
     await Cart.deleteOne({ userId });
 
     // Email
-    const { cardLast4, exp } = req.body || {};
+    let { cardLast4, exp } = req.body || {};
     cardLast4 = /^\d{4}$/.test(String(cardLast4 || '')) ? String(cardLast4) : null;
     exp = /^\d{2}\/\d{2}$/.test(String(exp || '')) ? String(exp) : null;
     try {
