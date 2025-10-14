@@ -72,7 +72,10 @@ exports.postProfile = async (req, res, next) => {
       role: updated.role,
     };
 
-    return res.redirect('/mon-compte');
+    req.session.save(err => {
+      if (err) return next(err);
+      return res.redirect('/mon-compte'); 
+    });
   } catch (err) {
     // Contrainte d’unicité email
     if (err.code === 'P2002' && err.meta?.target?.includes('email')) {
@@ -116,10 +119,10 @@ exports.deleteAccount = async (req, res, next) => {
     const id = Number(req.session?.user?.id);
     if (!id) return res.redirect('/login');
 
-    // On empêche qu’un admin se supprime lui-même si tu le souhaites
+    // On empêche qu’un admin se supprime lui-même
     if (req.session.user.role === 'ADMIN') return res.status(403).send('Forbidden');
 
-    // Supprimer les données liées AVANT l’utilisateur (si pas de cascade)
+    // Supprimer les données liées AVANT l’utilisateur
     await prisma.$transaction([
       prisma.commande?.deleteMany ? prisma.commande.deleteMany({ where: { userId: id } }) : Promise.resolve(),
       prisma.ticket?.deleteMany({ where: { userId: id } }), 
