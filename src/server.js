@@ -1,20 +1,10 @@
 //connexion à MongoDB
 require('dotenv').config();
+const  { PrismaClient } = require('@prisma/client');
 const app = require('./app');
 const connectMongoDB = require('./config/mongo');
 
-const  { PrismaClient } = require('@prisma/client');
-
-let prisma;
-
-if (process.env.NODE_ENV === 'production') {
-    prisma = new PrismaClient();
-} else {
-    if (!global.prisma) {
-        global.prisma = new PrismaClient();
-    }
-    prisma = global.prisma;
-}
+const prisma = new PrismaClient();
 
 module.exports = { app, prisma };
 
