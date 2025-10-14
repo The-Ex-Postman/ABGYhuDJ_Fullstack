@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../db');
 const mailer = require('../config/mailer');
 
 /** Formulaire "Mot de passe oublié" */
@@ -85,11 +84,11 @@ router.post('/reinitialiser-mot-de-passe', async (req, res) => {
       });
     }
 
-    const newHash = await bcrypt.hash(password, 12); // adapte si tu utilises autre chose
+    const newHash = await bcrypt.hash(password, 12); 
     await prisma.user.update({
       where: { id: user.id },
       data: {
-        password: newHash,             // <-- renomme si ton champ diffère
+        password: newHash,             
         resetTokenHash: null,
         resetTokenExp: null,
         passwordChangedAt: new Date()

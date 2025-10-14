@@ -2,8 +2,7 @@ const express = require('express');
 const router = express.Router();
 const accountController = require('../controllers/account.controller');
 const { requirePage, requireApi } = require('../middlewares/requireAuth');
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require('../db');
 
 router.get('/mon-compte', requirePage, async (req, res, next) => {
   try {

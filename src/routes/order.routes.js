@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient({ log: ['query', 'error', 'warn'] });
+const prisma = require('../db');
 
 const {requirePage, requireApi} = require('../middlewares/requireAuth');
 const orderController = require('../controllers/order.controller');
