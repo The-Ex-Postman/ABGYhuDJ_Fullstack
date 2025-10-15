@@ -50,7 +50,9 @@ app.use(express.urlencoded({ extended: true }));
 
 //sessions
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
 const ONE_HOUR = 1000 * 60 * 60;
+const MONGO_URI = process.env.MONGODB_URI;
 
 app.set('trust proxy', 1);
 
@@ -58,6 +60,11 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret-change-me',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: MONGO_URI,
+    ttl: 60 * 60 * 24 * 7,
+    collectionName: 'sessions',
+  }),
   cookie: {
     maxAge: ONE_HOUR,
     httpOnly: true,
