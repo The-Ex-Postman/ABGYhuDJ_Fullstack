@@ -1,4 +1,4 @@
-const { prisma } = require('../db');
+const prisma = require('../config/prisma');
 const Cart = require('../models/cart');
 const mailer = require('../config/mailer');
 

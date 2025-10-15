@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
 const bcrypt = require('bcrypt');
-const prisma = require('../db');
+const prisma = require('../config/prisma');
 const mailer = require('../config/mailer');
 
 /** Formulaire "Mot de passe oublié" */
