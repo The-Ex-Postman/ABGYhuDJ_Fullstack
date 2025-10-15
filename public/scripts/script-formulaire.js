@@ -1,4 +1,3 @@
-// Affichage du panier serveur
 async function chargerPanierDepuisServeur() {
   try {
     const res = await fetch('/api/cart/get');
@@ -20,7 +19,6 @@ async function chargerPanierDepuisServeur() {
       return;
     }
 
-    // Grouper par concert
     const byConcert = new Map();
     for (const it of items) {
       const id = Number(it.concertId);
@@ -42,11 +40,9 @@ async function chargerPanierDepuisServeur() {
       bucket.total += st;
     }
 
-    // Total général
     let grandTotal = 0;
     for (const { total } of byConcert.values()) grandTotal += total;
 
-    // Rendu HTML
     const cards = [];
     for (const [cid, c] of byConcert.entries()) {
       const lignesHtml = c.lignes.map(l =>
@@ -78,7 +74,6 @@ async function chargerPanierDepuisServeur() {
 
 document.addEventListener('DOMContentLoaded', chargerPanierDepuisServeur);
 
-//Alerte à l'ouverture de la page
 window.addEventListener('DOMContentLoaded', () => {
     const alerte = document.querySelector('.alerte');
     const closeBtn = alerte?.querySelector('.close-alerte');
@@ -98,7 +93,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-//check des infos personnelles
 document.getElementById('btn-valider').addEventListener('click', async (e) => {
   e.preventDefault();
 
@@ -128,7 +122,6 @@ document.getElementById('btn-valider').addEventListener('click', async (e) => {
   }
 });
 
-//fermer le popup
 const btnClose = document.getElementById('popup-close');
 const overlay = document.getElementById('popup-overlay');
 
@@ -142,7 +135,6 @@ overlay.addEventListener('click', (e) => {
   }
 });
 
-//Valider les informations bancaire et envoyer le formulaire pour paiement
 const formulairePaiement = document.querySelector('.saisie-cb form');
 
 const regexCarte = /^[0-9]{16}$/;
@@ -167,7 +159,6 @@ formulairePaiement.addEventListener('submit', async (e) => {
   boutonSubmit.textContent = "Traitement en cours...";
 
   try {
-    // Appel serveur pour confirmer la commande
     const res = await fetch('/api/checkout/confirm', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
@@ -183,7 +174,6 @@ formulairePaiement.addEventListener('submit', async (e) => {
       throw new Error(data.message || 'Erreur lors de la confirmation');
     }
 
-    // Succès: fermer le popup, vider l'affichage panier, message de succès
     overlay.classList.add('hidden');
 
     const container = document.querySelector('.main-container');
@@ -205,7 +195,6 @@ formulairePaiement.addEventListener('submit', async (e) => {
   }
 });
 
-//Empêcher le copier/coller
 const champsSensibles = document.querySelectorAll('#numero-carte, #date-exp, #cvv');
 
 champsSensibles.forEach(champ => {

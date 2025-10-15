@@ -1,5 +1,3 @@
-// Popups Footer
-
 let lastFocusedLink = null;
 
 document.querySelectorAll('.down-link').forEach(link => {
@@ -23,8 +21,6 @@ document.querySelectorAll('.down-link').forEach(link => {
     });
 });
 
-//fermeture des popups intuitive
-
 document.addEventListener('click', (e) => {
     const isPopup = e.target.closest('.popup');
     const isLink = e.target.closest('.down-link');
@@ -36,8 +32,6 @@ document.addEventListener('click', (e) => {
         }
     }
 });
-
-// Accessibilité
 
 document.addEventListener("keydown", function(e) {
     if (e.key === "Escape") {

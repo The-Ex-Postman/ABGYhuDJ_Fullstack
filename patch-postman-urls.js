@@ -1,5 +1,3 @@
-
-// save as patch-postman-urls.js then: node patch-postman-urls.js input.json output.json
 const fs = require('fs');
 
 function normalizeItem(it) {
@@ -17,17 +15,15 @@ function normalizeItem(it) {
       it.request.url = { raw: u.raw };
       return;
     }
-    // Rebuild from protocol/host/path/query if needed
     let raw = '';
     const proto = (u.protocol ? u.protocol + '://' : '');
     const host = Array.isArray(u.host) ? u.host.join('.') : (u.host || '');
     const path = Array.isArray(u.path) ? '/' + u.path.join('/') : (u.path ? '/' + u.path : '');
     raw = (proto || '').concat(host || '').concat(path || '');
     if (!raw && u.variable && u.variable.length) {
-      // fallback: try {{var}} if any
       raw = '{{' + u.variable[0].key + '}}';
     }
-    if (!raw) raw = '{{baseUrl}}'; // ultimate fallback
+    if (!raw) raw = '{{baseUrl}}';
     it.request.url = { raw };
   }
 }

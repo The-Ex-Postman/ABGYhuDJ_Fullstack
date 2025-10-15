@@ -7,7 +7,6 @@ exports.requireAdmin = (req, res, next) => {
     return next();
   }
 
-  // détecter si la requête attend du JSON
   const wantsJSON =
     req.xhr ||
     (req.headers.accept || '').includes('application/json') ||

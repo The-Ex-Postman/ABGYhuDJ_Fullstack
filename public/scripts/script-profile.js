@@ -1,4 +1,3 @@
-// Edition des infos personnelles
 document.addEventListener('DOMContentLoaded', () => {
   const btnEdit = document.getElementById('btn-edit');
   const btnCancel = document.getElementById('btn-cancel');
@@ -44,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
   btnCancel?.addEventListener('click', () => exitEditMode(true));
 });
 
-// Popup "Supprimer mon compte"
 document.addEventListener('DOMContentLoaded', () => {
   const openBtn   = document.getElementById('open-delete');
   const popup     = document.getElementById('popup-delete');

@@ -5,12 +5,10 @@ const bcrypt = require('bcrypt');
 const prisma = require('../config/prisma');
 const mailer = require('../config/mailer');
 
-/** Formulaire "Mot de passe oublié" */
 router.get('/mot-de-passe-oublie', (req, res) => {
   res.render('forgot-password', { title: 'Mot de passe oublié', sent: false });
 });
 
-/** Envoi du lien par email (réponse générique pour éviter l’énumération) */
 router.post('/mot-de-passe-oublie', async (req, res) => {
   const email = String(req.body.email || '').trim().toLowerCase();
   try {
@@ -39,7 +37,6 @@ router.post('/mot-de-passe-oublie', async (req, res) => {
       });
     }
 
-    // Réponse toujours identique
     res.render('forgot-password', { title: 'Mot de passe oublié', sent: true });
   } catch (e) {
     console.error('[forgot-password] error:', e);
@@ -47,14 +44,12 @@ router.post('/mot-de-passe-oublie', async (req, res) => {
   }
 });
 
-/** Form reset */
 router.get('/reinitialiser-mot-de-passe', (req, res) => {
   const { token, email } = req.query;
   if (!token || !email) return res.status(400).send('Lien invalide');
   res.render('reset-password', { title:'Réinitialiser le mot de passe', token, email, error: null, ok: false });
 });
 
-/** Soumission nouveau mot de passe */
 router.post('/reinitialiser-mot-de-passe', async (req, res) => {
   try {
     const { token, email, password, confirm } = req.body;

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const cartSchema = new Schema({
   userId: {
-    type: Number, // ID SQL de l'utilisateur
+    type: Number, 
     required: true,
     unique: true
   },
@@ -18,7 +18,7 @@ const cartSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 3600 // Panier auto-supprimé après 1h
+    expires: 3600 
   }
 });
 

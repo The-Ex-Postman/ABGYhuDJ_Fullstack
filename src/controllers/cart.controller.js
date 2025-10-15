@@ -1,16 +1,12 @@
 const Cart = require('../models/cart');
 const prisma = require('../config/prisma');
 
-
-// GET /api/cart/get
-
 exports.getCart = async (req, res) => {
   const userId = req.session?.user?.id;
   if (!userId) return res.status(401).json({ ok:false, message:'Non authentifié' });
   const cart = await Cart.findOne({ userId }).lean();
   const items = cart?.items || [];
 
-  // métadonnées concerts (ville, image, date, lieu)
   const ids = [...new Set(items.map(i => Number(i.concertId)).filter(Boolean))];
   let meta = {};
   if (ids.length) {
@@ -30,8 +26,6 @@ exports.getCart = async (req, res) => {
 
   res.json({ ok: true, items, meta });
 };
-
-// * POST /api/cart/add
 
 exports.addToCart = async (req, res) => {
   try {
@@ -71,8 +65,6 @@ exports.addToCart = async (req, res) => {
       items.push({ concertId, type, quantite, prixUnitaire });
     }
 
-    // STOCK CHECK
-
     const requestedByConcert = new Map();
     for (const it of items) {
       requestedByConcert.set(it.concertId, (requestedByConcert.get(it.concertId) || 0) + it.quantite);
@@ -108,8 +100,6 @@ exports.addToCart = async (req, res) => {
       }
     }
 
-    // Upsert panier + merge
-
     const cart = existingCart || new Cart({ userId, items: [] });
 
     for (const it of items) {
@@ -131,10 +121,6 @@ exports.addToCart = async (req, res) => {
   }
 };
 
-/**
- * POST /api/cart/clear
- * Vide le panier de l’utilisateur courant
- */
 exports.clearCart = async (req, res) => {
   try {
     const userId = req.session.user.id;

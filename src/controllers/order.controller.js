@@ -25,7 +25,6 @@ exports.confirmCheckout = async (req, res, next) => {
     const userId = Number(req.session?.user?.id);
     if (!userId) return res.status(401).json({ ok:false, message:'Non connecté' });
 
-    // 1) User + infos obligatoires
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (!user) return res.status(404).json({ ok:false, message:'Utilisateur introuvable' });
 
@@ -35,14 +34,12 @@ exports.confirmCheckout = async (req, res, next) => {
       return res.status(400).json({ ok:false, message:'Informations personnelles incomplètes' });
     }
 
-    // 2) Panier
     const cartDoc = await Cart.findOne({ userId }).lean();
     const items = Array.isArray(cartDoc?.items) ? cartDoc.items : [];
     if (!items.length) {
       return res.status(400).json({ ok:false, message:'Panier vide' });
     }
 
-    // 3) Recalcul serveur + préparation des lignes
     let totalCents = 0;
     const lignes = [];                      
     const decByConcert = new Map();         
@@ -57,7 +54,6 @@ exports.confirmCheckout = async (req, res, next) => {
       if (!quantite || quantite < 1) throw new Error(`quantite invalide (item #${idx})`);
       if (!['debout','assis'].includes(rawType)) throw new Error(`type invalide (item #${idx})`);
 
-      // prix depuis la DB (source de vérité)
       const concert = await prisma.concert.findUnique({
         where: { id: concertId },
         select: { ville:true, prixDebout:true, prixAssis:true }
@@ -85,9 +81,7 @@ exports.confirmCheckout = async (req, res, next) => {
 
     const total = totalCents / 100;
 
-    // 4) Transaction : décrément placesDispo (stock unique) + création commande + tickets
     const commande = await prisma.$transaction(async (tx) => {
-      // décrément conditionnel par concert
       for (const [cid, dec] of decByConcert.entries()) {
         const updated = await tx.concert.updateMany({
           where: { id: cid, placesDispo: { gte: dec } },
@@ -99,7 +93,6 @@ exports.confirmCheckout = async (req, res, next) => {
         }
       }
 
-      // créer la commande
       const cmd = await tx.commande.create({
         data: {
           userId,
@@ -109,7 +102,6 @@ exports.confirmCheckout = async (req, res, next) => {
         }
       });
 
-      // lignes tickets
       for (const l of lignes) {
         await tx.ticket.create({
           data: {
@@ -125,10 +117,8 @@ exports.confirmCheckout = async (req, res, next) => {
       return cmd;
     });
 
-    // Vider le panier
     await Cart.deleteOne({ userId });
 
-    // Email
     let { cardLast4, exp } = req.body || {};
     cardLast4 = /^\d{4}$/.test(String(cardLast4 || '')) ? String(cardLast4) : null;
     exp = /^\d{2}\/\d{2}$/.test(String(exp || '')) ? String(exp) : null;

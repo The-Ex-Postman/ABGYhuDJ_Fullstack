@@ -46,7 +46,6 @@ const toNumOptional = z.preprocess(v => {
 
 router.use('/admin', requireAdmin);
 
-// Page board
 router.get('/admin', requireAdmin, async (req, res, next) => {
   try {
     const rows = await prisma.concert.findMany({
@@ -80,7 +79,6 @@ router.get('/admin', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// API: liste des concerts
 router.get('/admin/api/concerts', requireAdmin, async (req, res, next) => {
   try {
     const concerts = await prisma.concert.findMany({
@@ -91,7 +89,6 @@ router.get('/admin/api/concerts', requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-// API: détail d’un concert
 router.get('/admin/api/concerts/:id', requireAdmin, async (req, res, next) => {
   try {
     const id = Number(req.params.id);
@@ -112,7 +109,6 @@ const updateStockSchema = z.object({
   query:  z.object({}).passthrough()
 });
 
-// API: mise à jour du stock
 router.patch('/admin/api/concerts/:id/stock',
   requireAdmin,
   validate(updateStockSchema),
@@ -133,7 +129,6 @@ router.patch('/admin/api/concerts/:id/stock',
   }
 );
 
-// Ajout d'un concert
 const addConcertSchema = z.object({
   body: z.object({
     ville: z.string().min(1),

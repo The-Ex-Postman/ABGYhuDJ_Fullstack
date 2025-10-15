@@ -7,7 +7,6 @@ const orderController = require('../controllers/order.controller');
 
 router.get('/formulaire', requirePage, orderController.getFormulaire);
 
-//check des infos utilisateur
 router.get('/check-user-info', requireApi, async (req, res) => {
   const id = Number(req.session?.user?.id);
   if (!id) return res.status(401).json({ ok: false, message: 'Non connecté' });

@@ -10,7 +10,6 @@ const emptyToNull = (v) => {
   return t === '' ? null : t;
 };
 
-// Exporter les infos de la table User vers la vue profile
 exports.getProfile = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
@@ -29,13 +28,11 @@ exports.getProfile = async (req, res, next) => {
   }
 };
 
-// Mise à jour du profil utilisateur
 exports.postProfile = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
     if (!id) return res.redirect('/login');
 
-    // normalisation + limites
     const email = req.body.email ? req.body.email.trim().toLowerCase() : undefined;
     if (email !== undefined && !isEmail(email)) {
       const user = await prisma.user.findUnique({ where: { id } });
@@ -75,7 +72,6 @@ exports.postProfile = async (req, res, next) => {
       return res.redirect(303, '/mon-compte'); 
     });
   } catch (err) {
-    // Contrainte d’unicité email
     if (err.code === 'P2002' && err.meta?.target?.includes('email')) {
       const id = Number(req.session.user.id);
       const user = await prisma.user.findUnique({ where: { id } });
@@ -91,7 +87,6 @@ exports.postProfile = async (req, res, next) => {
   }
 };
 
-//historique
 exports.getPastOrders = async (req, res, next) => {
   try {
     const userId = req.session?.user?.id;
@@ -111,26 +106,21 @@ exports.getPastOrders = async (req, res, next) => {
   } catch (e) { next(e); }
 };
 
-// Suppression du compte utilisateur
 exports.deleteAccount = async (req, res, next) => {
   try {
     const id = Number(req.session?.user?.id);
     if (!id) return res.redirect('/login');
 
-    // On empêche qu’un admin se supprime lui-même
     if (req.session.user.role === 'ADMIN') return res.status(403).send('Forbidden');
 
-    // Supprimer les données liées AVANT l’utilisateur
     await prisma.$transaction([
       prisma.commande?.deleteMany ? prisma.commande.deleteMany({ where: { userId: id } }) : Promise.resolve(),
       prisma.ticket?.deleteMany({ where: { userId: id } }), 
       prisma.user.delete({ where: { id } }),
     ]);
 
-    // Purge du panier Mongo
     try { await Cart.deleteOne({ userId: id }); } catch (_) {}
 
-    // Fin de session + redirection
     req.session.destroy((err) => {
       if (err) return next(err);
       res.clearCookie('connect.sid');

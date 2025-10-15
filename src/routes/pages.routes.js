@@ -4,7 +4,6 @@ const prisma = require('../config/prisma');
 const path = require('path');
 const fs = require('fs');
 
-//routes publiques
 router.get('/', (req, res) => {
   const u = req.session.user;
   if (!u) return res.redirect('/login');
@@ -24,7 +23,6 @@ router.get('/login', (req, res) => {
 
 module.exports = router;
 
-//routes protégées
 const { requirePage, requireApi } = require('../middlewares/requireAuth');
 const cart = require('../models/cart');
 
@@ -66,8 +64,8 @@ function formatDateHeureFR(iso) {
 
 function slugVille(v) {
   return String(v || '')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // suppr. accents
-    .toLowerCase().replace(/[^a-z0-9]+/g, '-')        // non alnum -> -
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
 
@@ -99,8 +97,6 @@ router.get('/billeterie', requirePage, async (req, res, next) => {
     res.render('billeterie', { concerts: enriched, page: 'billeterie', title: 'Billetterie' });
   } catch (e) { next(e); }
 });
-
-//route de déconnexion
 
 router.get('/logout', (req, res) => {
   const userId = req.session.user?.id;

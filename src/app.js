@@ -6,7 +6,6 @@ const ROOT = process.cwd();
 
 const app = express();
 
-//autorisation helmet pour font awesome
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -38,17 +37,15 @@ app.use(
     },
   })
 );
-// Config moteur de template Twig
+
 const { twig } = require('twig');
 app.set('view engine', 'twig');
 app.set('views', path.join(ROOT, 'views'));
 
-// Middlewares de base
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//sessions
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const ONE_HOUR = 1000 * 60 * 60;
@@ -83,39 +80,30 @@ app.use((req, res, next) => {
 const logger = require('./middlewares/logger');
 app.use(logger);
 
-//Limites Login / Reset MDP
 const rateLimit = require('express-rate-limit');
 
 const authLimiter = rateLimit({ windowMs: 15*60*1000, max: 20, standardHeaders:true, legacyHeaders:false });
 app.use(['/login','/mot-de-passe-oublie','/reinitialiser-mot-de-passe'], authLimiter);
 
-// Routes API
 const authRoutes = require('./routes/auth.routes');
 app.use('/api/auth', authRoutes);
 
-//Routes User DB
 const accountRoutes = require('./routes/account.routes');
 app.use('/', accountRoutes);
 
-//Routes formulaire DB
 const orderRoutes = require('./routes/order.routes');
 app.use('/', orderRoutes);
 
-// Routes de pages (HTML)
 const pageRoutes = require('./routes/pages.routes');
 app.use('/', pageRoutes);
 
-// Routes panier
 const cartRoutes = require('./routes/cart.routes');
 app.use('/api/cart', cartRoutes);
 
-// Routes mot de passe oublié
 app.use('/', require('./routes/password.routes'));
 
-// Routes admin
 app.use('/', require('./routes/admin.routes'));
 
-// Handler d’erreurs global
 app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
 

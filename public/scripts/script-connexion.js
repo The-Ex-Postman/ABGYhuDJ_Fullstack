@@ -1,5 +1,3 @@
-// bloquer la connexion en cas de logs incorrects
-
 document.querySelector('.connect-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   

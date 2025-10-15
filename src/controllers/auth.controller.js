@@ -76,15 +76,12 @@ const login = async (req, res) => {
       return res.status(401).json({ message: '❌ Identifiants invalides' });
     }
 
-    // Log succès
     await Log.create({ type:'connexion', ip:req.ip, user_id:user.id, route:'/login', payload:{ email }});
 
-    // enrichir la session
     const admin = isAdminUser(user);
     req.session.user = { id: user.id, email: user.email, role: user.role, isAdmin: admin };
     req.session.userId = user.id;
 
-    // calcul de la destination
     const wanted = req.session.returnTo || req.query.next;
     const nextUrl = wanted || (admin ? '/admin' : '/accueil');
 

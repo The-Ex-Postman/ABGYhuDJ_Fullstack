@@ -1,4 +1,3 @@
-// Navbar toogle
 const toggleNavbar = document.querySelector('.toggle-compte');
 const menu = document.querySelector('.compte-menu');
 
@@ -14,7 +13,6 @@ const menu = document.querySelector('.compte-menu');
     });
   }
 
-// Panier
 document.addEventListener('DOMContentLoaded', () => {
   const boutonPanier = document.querySelector('[data-popup-panier]');
   const popup = document.getElementById('popup-panier');
@@ -86,8 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
-// Vider le panier
 document.getElementById('empty-cart')?.addEventListener('click', async (e) => {
   e.preventDefault();
 

@@ -1,13 +1,11 @@
 const currentUserId = document.body.dataset.userid;
 const storedUserId = localStorage.getItem('currentUser');
 
-// Nettoyage si changement d'utilisateur
 if (storedUserId && storedUserId !== currentUserId) {
   localStorage.removeItem(`panierABGY_${storedUserId}`);
 }
 localStorage.setItem('currentUser', currentUserId);
 
-// Déroulants des vignettes concert
 const boutons = document.querySelectorAll('.deroulant');
 boutons.forEach(bouton => {
   bouton.addEventListener('click', () => {
@@ -17,7 +15,6 @@ boutons.forEach(bouton => {
   });
 });
 
-// Synchronisation depuis MongoDB au chargement
 let panier = [];
 
 window.addEventListener('DOMContentLoaded', async () => {
@@ -40,7 +37,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// Ajout au panier
 const boutonAjout = document.querySelectorAll('.ajout-panier');
 
 boutonAjout.forEach(btn => {
@@ -96,7 +92,6 @@ boutonAjout.forEach(btn => {
       items.push({ concertId, type: 'assis', quantite: qteAssis, prixUnitaire: prixAssis });
     }
 
-    // MAJ panier local
     const index = panier.findIndex(item => item.ville === ville);
     if (index !== -1) {
       panier[index].debout += qteDebout;
@@ -106,14 +101,11 @@ boutonAjout.forEach(btn => {
     }
     localStorage.setItem(`panierABGY_${currentUserId}`, JSON.stringify(panier));
 
-    // reset inputs
     if (inputDebout) inputDebout.value = '';
     if (inputAssis)  inputAssis.value  = '';
 
-    // envoi groupé
     sauvegarderDansMongo(items);
 
-    // replier le bloc
     const blocDeroulant = vignette.querySelector('.toogle-deroulant');
     const boutonToggle = vignette.querySelector('.deroulant');
     blocDeroulant?.classList.remove('visible');
@@ -121,7 +113,6 @@ boutonAjout.forEach(btn => {
   });
 });
 
-// Envoi vers Mongo
 async function sauvegarderDansMongo(items) {
   if (!Array.isArray(items) || items.length === 0) return;
 
