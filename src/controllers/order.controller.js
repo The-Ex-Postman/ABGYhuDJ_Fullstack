@@ -1,4 +1,5 @@
 const prisma = require('../config/prisma');
+const { Prisma } = require('@prisma/client');
 const Cart = require('../models/cart');
 const mailer = require('../config/mailer');
 
@@ -102,7 +103,7 @@ exports.confirmCheckout = async (req, res, next) => {
       const cmd = await tx.commande.create({
         data: {
           userId,
-          total: new prisma.Decimal(total.toFixed(2)),
+          total: new Prisma.Decimal(total.toFixed(2)),
           dateCommande: new Date(),
           status: 'VALIDEE',               
         }
@@ -116,7 +117,7 @@ exports.confirmCheckout = async (req, res, next) => {
             concertId: l.concertId,
             type: l.type,
             quantite: l.quantite,
-            prixUnitaire: new prisma.Decimal(l.prixUnitaire.toFixed(2)),
+            prixUnitaire: new Prisma.Decimal(l.prixUnitaire.toFixed(2)),
           }
         });
       }
