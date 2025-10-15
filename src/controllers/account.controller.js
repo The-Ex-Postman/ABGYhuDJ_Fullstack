@@ -64,7 +64,6 @@ exports.postProfile = async (req, res, next) => {
     };
 
     const updated = await prisma.user.update({ where: { id }, data });
-    // rafraîchir la session pour que le reste du site ait les valeurs à jour
     req.session.user = {
       id: updated.id,
       email: updated.email,
@@ -73,7 +72,7 @@ exports.postProfile = async (req, res, next) => {
 
     req.session.save(err => {
       if (err) return next(err);
-      return res.redirect('/mon-compte'); 
+      return res.redirect(303, '/mon-compte'); 
     });
   } catch (err) {
     // Contrainte d’unicité email
