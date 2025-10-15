@@ -102,7 +102,7 @@ exports.confirmCheckout = async (req, res, next) => {
       const cmd = await tx.commande.create({
         data: {
           userId,
-          total: new Prisma.Decimal(total.toFixed(2)),
+          total: new prisma.Decimal(total.toFixed(2)),
           dateCommande: new Date(),
           status: 'VALIDEE',               
         }
@@ -116,7 +116,7 @@ exports.confirmCheckout = async (req, res, next) => {
             concertId: l.concertId,
             type: l.type,
             quantite: l.quantite,
-            prixUnitaire: new Prisma.Decimal(l.prixUnitaire.toFixed(2)),
+            prixUnitaire: new prisma.Decimal(l.prixUnitaire.toFixed(2)),
           }
         });
       }
