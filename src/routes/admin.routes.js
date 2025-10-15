@@ -64,7 +64,7 @@ router.get('/admin', requireAdmin, async (req, res, next) => {
       select: { id:true, ville:true, lieu:true, placesDispo:true, date:true }
     });
 
-    const tz = process.env.TZ || 'Europe/Paris';
+    const tz = 'Europe/Paris';
     const fD = new Intl.DateTimeFormat('fr-FR', {
       timeZone: tz,
       day: '2-digit', month: 'long', year: 'numeric',
