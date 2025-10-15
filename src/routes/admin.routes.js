@@ -19,21 +19,11 @@ function slugVille(v) {
 }
 
 const ASSETS_DIR = path.join(process.cwd(), 'public', 'assets');
-fs.mkdirSync(ASSETS_DIR, { recursive: true });
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, ASSETS_DIR),
-  filename: (req, file, cb) => {
-    const base = slugVille(req.body?.ville) || 'ville';
-    const extFromName = (path.extname(file.originalname) || '.jpg').toLowerCase();
-    const allowed = new Set(['.jpg', '.jpeg', '.png', '.webp']);
-    const ext = allowed.has(extFromName) ? extFromName : '.jpg';
-    cb(null, `${base}${ext}`);
-  }
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
-  storage,
+  storage: storage,
   fileFilter: (req, file, cb) => {
     if (/^image\/(png|jpe?g|webp)$/i.test(file.mimetype)) return cb(null, true);
     return cb(null, false);
