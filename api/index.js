@@ -1,5 +1,5 @@
 const app = require('../src/server');
-const { prisma } = require('../src/db');
+const prisma = require('../src/config/prisma');
 const connectMongoDB = require('../src/config/mongo');
 
 let mongoReady;

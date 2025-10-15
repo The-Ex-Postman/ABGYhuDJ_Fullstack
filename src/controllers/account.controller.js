@@ -1,4 +1,4 @@
-const { prisma } = require('../db');
+const prisma = require('../config/prisma');
 
 const isEmail = (s='') => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(s).trim().toLowerCase());
 const isPhoneFR = (s='') => /^(\+33|0)[1-9](\d{2}){4}$/.test(String(s).replace(/\s+/g,''));
