@@ -123,7 +123,7 @@ exports.deleteAccount = async (req, res, next) => {
     req.session.destroy((err) => {
       if (err) return next(err);
       res.clearCookie('connect.sid');
-      return res.redirect('/login?account_deleted=1');
+      return res.redirect(303, '/login?account_deleted=1');
     });
   } catch (err) {
     return next(err);
