@@ -114,9 +114,8 @@ exports.deleteAccount = async (req, res, next) => {
     if (req.session.user.role === 'ADMIN') return res.status(403).send('Forbidden');
 
     await prisma.$transaction([
-      prisma.commande?.deleteMany ? prisma.commande.deleteMany({ where: { userId: id } }) : Promise.resolve(),
-      prisma.ticket?.deleteMany({ where: { userId: id } }), 
-      prisma.user.delete({ where: { id } }),
+      prisma.commande?.deleteMany ? prisma.commande.deleteMany({ where: { user: { id: id } } }) : Promise.resolve(),
+      prisma.user.delete({ where: { id : id } }),
     ]);
 
     try { await Cart.deleteOne({ userId: id }); } catch (_) {}
