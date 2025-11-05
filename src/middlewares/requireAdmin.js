@@ -7,10 +7,8 @@ exports.requireAdmin = (req, res, next) => {
     return next();
   }
 
-  const wantsJSON =
-    req.xhr ||
-    (req.headers.accept || '').includes('application/json') ||
-    req.originalUrl.includes('/api');
+  const accepts = require('accepts');
+  const wantsJSON = accepts(req).types(['json', 'html']) === 'json';
 
   if (wantsJSON) {
     return res.status(403).json({ ok: false, message: 'Accès administrateur requis' });
