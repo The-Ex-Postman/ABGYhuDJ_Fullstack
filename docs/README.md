@@ -290,7 +290,8 @@ newman run postman/collections/ABGYhuDJ_admin_concerts.postman_collection.json  
 > Les rapports HTML se retrouvent dans `newman/` (`report_user.html`, `report_admin.html`).
 
 ## Déploiement
-1. Créer les bases **PostgreSQL** & **MongoDB** (hébergées).  
+1. Créer les bases **PostgreSQL** & **MongoDB** (hébergées).
+    Ici les bases son hébergées respectivement sur Supabase (BDD Postgre) et Mongo Atlas (BDD Mongo).
 2. Renseigner `.env` (DB, SMTP, `SESSION_SECRET`, `NODE_ENV=production`).
 3. `npm ci`
 4. `npx prisma migrate deploy`
@@ -302,7 +303,9 @@ newman run postman/collections/ABGYhuDJ_admin_concerts.postman_collection.json  
    ```
 6. Reverse proxy (Nginx) + **TLS**.
 7. Activer `helmet`, rate-limit et un **session store** persistant.
-
+8. Script de lancement au format JSON et repo importé sur Vercel.
+9. Redéfinir les variables d'env et les URI associées aux BDD.
+10. Lancer le déploiement.
 ## Dépannage
 - **Remise à zéro (dev uniquement)** :
   ```bash
